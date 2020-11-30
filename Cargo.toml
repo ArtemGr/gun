@@ -7,7 +7,7 @@ authors = [
 version = "0.1.1"
 edition = "2018"
 license = "MIT"
-keywords = ["p2p", "decentralized", "graph", "offline-first", "crdt", "database", "dapp", "end-to-end"]
+keywords = ["p2p", "graph", "offline-first", "crdt", "database"]
 #documentation = "docs.rs.."
 repository = "https://github.com/ArtemGr/gun"
 
