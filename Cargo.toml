@@ -1,0 +1,23 @@
+[package]
+name = "gun"
+description = "The Gun database, in Rust"
+authors = [
+  "Artemciy <artemciy@gmail.com>"
+]
+version = "0.1.1"
+edition = "2018"
+license = "MIT"
+keywords = ["p2p", "decentralized", "graph", "offline-first", "crdt", "database", "dapp", "end-to-end"]
+#documentation = "docs.rs.."
+repository = "https://github.com/ArtemGr/gun"
+
+[lib]
+name = "gun"
+path = "src/gun.rs"
+
+[dependencies]
+
+[features]
+#no_std = ["bare-io"]
+
+[dev-dependencies]
