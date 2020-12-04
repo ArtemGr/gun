@@ -4,35 +4,53 @@
 	<title></title>
 </head>
 <body>
-	<script src="./dup.js"></script>
+  <script src="./ham.js"></script>
+  <script src="./dup.js"></script>
 	<script>
 var dup = Dup();
 var peer = new WebSocket('ws://localhost:8080');
 peer.onopen = function(o){ 
-	console.log('open', o);
-	var msg = {
-		'#': dup.track(Dup.random()),
-    put: {
-      ASDF: {_: {'#': 'ASDF'},
-        name: "Mark Nadal",
-        boss: {'#': 'FDSA'}
-      },
-      FDSA: {_: {'#': 'FDSA'},
-        name: "Fluffy",
-        species: "a kitty",
-        slave: {'#': 'ASDF'}
+  console.log('open', o);
+  setTimeout(function(){
+    var msg = {
+      '#': dup.track(Dup.random()),
+      put: {
+        ASDF: {_: {'#': 'ASDF', '>': {name: 2, boss: 2}},
+          name: "Mark Nadal",
+          boss: {'#': 'FDSA'}
+        },
+        FDSA: {_: {'#': 'FDSA', '>': {name: 2, species: 2, slave: 2}},
+          name: "Fluffy",
+          species: "a kitty",
+          slave: {'#': 'ASDF'}
+        }
       }
     }
-	}
-  peer.send(JSON.stringify(msg));
+    peer.send(JSON.stringify(msg)); 
+  },1000 * Math.random());
+  setTimeout(function(){
+    var msg = {
+      '#': dup.track(Dup.random()),
+      put: {
+        ASDF: {_: {'#': 'ASDF', '>': {name: 1}},
+          name: "Mark",
+        },
+        FDSA: {_: {'#': 'FDSA', '>': {species: 2, color: 3}},
+          species: "felis silvestris",
+          color: 'ginger'
+        }
+      }
+    }
+    peer.send(JSON.stringify(msg));
+  },1000 * Math.random());
 };
 peer.onclose = function(c){ console.log('close', c) };
 peer.onmessage = function(m){
-	var msg = JSON.parse(m.data);
+  var msg = JSON.parse(m.data);
   if(dup.check(msg['#'])){ return }
   dup.track(msg['#']);
-	console.log('data', msg);
-	peer.send(m.data);
+  console.log('data', msg);
+  peer.send(m.data);
 };
 peer.onerror = function(e){ console.log('error', e) };
 	</script>
