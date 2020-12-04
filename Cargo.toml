@@ -2,7 +2,8 @@
 name = "gun"
 description = "The Gun database, in Rust"
 authors = [
-  "Artemciy <artemciy@gmail.com>"
+  "Artemciy <artemciy@gmail.com>",
+  "GiraffeKey <giraffekey@tutanota.com>",
 ]
 version = "0.1.1"
 edition = "2018"
@@ -16,6 +17,14 @@ name = "gun"
 path = "src/gun.rs"
 
 [dependencies]
+anyhow = "1.0"
+fnv = "1.0"
+futures-channel = "0.3"
+futures-util = { version = "0.3", default-features = false, features = ["async-await", "sink", "std"] }
+serde_json = "1.0"
+tokio = { version = "0.3", default-features = false, features = ["io-std", "macros", "rt-multi-thread", "stream", "time"] }
+tokio-tungstenite = "0.12"
+tungstenite = "0.11"
 
 [features]
 #no_std = ["bare-io"]

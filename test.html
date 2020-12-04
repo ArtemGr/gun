@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script>
+		var peer = new WebSocket('ws://localhost:8080');
+		peer.onopen = function(o){ console.log('open', o) };
+		peer.onclose = function(c){ console.log('close', c) };
+		peer.onmessage = function(m){
+			var msg = JSON.parse(m.data);
+			console.log(msg);
+			peer.send(m.data);
+		};
+		peer.onerror = function(e){ console.log('error', e) };
+	</script>
+</body>
+</html>
