@@ -4,13 +4,22 @@
 	<title></title>
 </head>
 <body>
+  <script src="./get.js"></script>
   <script src="./ham.js"></script>
   <script src="./dup.js"></script>
 	<script>
+var graph = {};
 var dup = Dup();
 var peer = new WebSocket('ws://localhost:8080');
 peer.onopen = function(o){ 
   console.log('open', o);
+  setTimeout(function(){
+    var msg = {
+      '#': dup.track(Dup.random()),
+      get: {'#': 'FDSA', '.': 'species'}
+    }
+    peer.send(JSON.stringify(msg));
+  },2000);
   setTimeout(function(){
     var msg = {
       '#': dup.track(Dup.random()),
@@ -49,6 +58,18 @@ peer.onmessage = function(m){
   var msg = JSON.parse(m.data);
   if(dup.check(msg['#'])){ return }
   dup.track(msg['#']);
+  if(msg.put){
+    HAM.mix(msg.put, graph);
+  }
+  if(msg.get){
+    var ack = GET(msg.get, graph);
+    ack = JSON.stringify({
+      '#': dup.track(Dup.random()),
+      '@': msg['#'],
+      put: ack
+    });
+    peer.send(ack);
+  }
   console.log('data', msg);
   peer.send(m.data);
 };

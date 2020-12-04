@@ -11,12 +11,15 @@ use serde_json::{json, Value};
 use tokio::{net::{TcpListener, TcpStream}};
 use tungstenite::protocol::Message;
 
-use crate::dedup::Dedup;
+use crate::dedup::{random_id, Dedup};
+use crate::get::get;
 use crate::ham::mix_ham;
-use crate::util::parse_json;
+use crate::util::{parse_json, SOUL};
+
+type PeerList = HashMap<SocketAddr, UnboundedSender<Message>>;
 
 struct Store {
-	peers: HashMap<SocketAddr, UnboundedSender<Message>>,
+	peers: PeerList,
 	dedup: Dedup,
     graph: Value,
 }
@@ -29,6 +32,15 @@ impl Store {
             graph: json!({}),
 		}
 	}
+}
+
+fn emit(peers: &PeerList, msg: Message) {
+    for (addr, tx) in peers {
+        match tx.unbounded_send(msg.clone()) {
+            Ok(_) => (),
+            Err(err) => log::error!("{}: {}", addr, err),
+        }
+    }
 }
 
 async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr: SocketAddr) {
@@ -57,17 +69,31 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
                 if store.lock().unwrap().dedup.check(id.clone()).is_none() {
                     store.lock().unwrap().dedup.track(id);
 
-                    if msg.get("put").is_some() {
+                    if !msg["put"].is_null() {
                         mix_ham(msg["put"].clone(), &mut store.lock().unwrap().graph);
-                        log::info!("{}: {}", addr, store.lock().unwrap().graph);
+                        log::info!("{}: PUT {}", addr, store.lock().unwrap().graph);
                     }
 
-                    for (addr, tx) in &store.lock().unwrap().peers {
-                        match tx.unbounded_send(msg_str.into()) {
-                            Ok(_) => (),
-                            Err(err) => log::error!("{}: {}", addr, err),
+                    if !msg["get"].is_null() {
+                        let ack = get(msg["get"].clone(), &store.lock().unwrap().graph);
+
+                        if let Some(ack) = ack {
+                            let data = json!({
+                                SOUL: store.lock().unwrap().dedup.track(random_id()),
+                                "@": msg[SOUL],
+                                "put": ack,
+                            }).to_string();
+
+                            emit(
+                                &store.lock().unwrap().peers,
+                                data.into(),
+                            );
+
+                            log::info!("{}: GET {}", addr, ack);
                         }
                     }
+                    
+                    emit(&store.lock().unwrap().peers, msg_str.into());                    
                 }
             },
             None => (),

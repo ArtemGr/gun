@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value};
 
-use crate::util::timestamp;
+use crate::util::{timestamp, SOUL, METADATA, STATE};
 
 struct HAM {
 	converge: bool,
@@ -58,13 +58,13 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 
 	for (soul, node) in change.as_object().unwrap().iter() {
 		for (key, val) in node.as_object().unwrap().iter() {
-			if let "_" | ">" = &key[..] {
+			if let SOUL | METADATA | STATE = &key[..] {
 				continue;
 			}
 
-			let state = node["_"][">"][key].as_u64().unwrap();
+			let state = node[METADATA][STATE][key].as_u64().unwrap();
 			let was = match graph.get(soul) {
-				Some(node) => match node["_"][">"].get(key) {
+				Some(node) => match node[METADATA][STATE].get(key) {
 					Some(val) => val.as_u64().unwrap(),
 					None => 0,
 				},
@@ -92,18 +92,18 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 			}
 
 			if graph[soul].is_null() {
-				graph[soul] = json!({"_":{"#":soul, ">":{}}});
+				graph[soul] = json!({METADATA:{SOUL:soul, STATE:{}}});
 			}
 
 			if diff[soul].is_null() {
-				diff[soul] = json!({"_":{"#":soul, ">":{}}});
+				diff[soul] = json!({METADATA:{SOUL:soul, STATE:{}}});
 			}
 
 			graph[soul][key] = json!(val);
 			diff[soul][key] = json!(val);
 
-			graph[soul]["_"][">"][key] = json!(state);
-			diff[soul]["_"][">"][key] = json!(state);
+			graph[soul][METADATA][STATE][key] = json!(state);
+			diff[soul][METADATA][STATE][key] = json!(state);
    		}
 	}
 

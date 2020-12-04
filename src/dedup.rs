@@ -3,9 +3,11 @@ use std::{
 };
 
 use fnv::FnvHashMap;
+use rand::prelude::*;
+use substring::Substring;
 use tokio::time::{sleep, Duration};
 
-use crate::util::timestamp;
+use crate::util::{format_radix, timestamp};
 
 const MAX: u64 = 1000;
 const AGE: u64 = 1000 * 9;
@@ -57,4 +59,10 @@ impl Dedup {
 
 		id
 	}
+}
+
+pub fn random_id() -> String {
+	let id = rand::thread_rng().gen_range(0, 1000000);
+	let id = format_radix(id, 36);
+	id.substring(id.len() - 3, id.len()).into()
 }

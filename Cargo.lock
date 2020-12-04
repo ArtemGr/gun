@@ -239,7 +239,9 @@ dependencies = [
  "futures-channel",
  "futures-util",
  "log",
+ "rand",
  "serde_json",
+ "substring",
  "tokio",
  "tokio-tungstenite",
  "tungstenite",
@@ -669,6 +671,15 @@ dependencies = [
  "libc",
  "redox_syscall",
  "winapi",
+]
+
+[[package]]
+name = "substring"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "134bb6744b6f5e4cf735bf590fd987c710600fb95db9af3be36491dea326b69b"
+dependencies = [
+ "autocfg",
 ]
 
 [[package]]
