@@ -56,11 +56,10 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
 
                 if store.lock().unwrap().dedup.check(id.clone()).is_none() {
                     store.lock().unwrap().dedup.track(id);
-                    log::info!("{}: received: {:?}", addr, msg);
 
                     if msg.get("put").is_some() {
                         mix_ham(msg["put"].clone(), &mut store.lock().unwrap().graph);
-                        log::info!("{}", store.lock().unwrap().graph);
+                        log::info!("{}: {}", addr, store.lock().unwrap().graph);
                     }
 
                     for (addr, tx) in &store.lock().unwrap().peers {

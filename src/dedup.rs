@@ -45,7 +45,7 @@ impl Dedup {
 
 				for (id, time) in &*timeline.lock().unwrap() {
 					if AGE > timestamp() - time {
-						break;
+						continue;
 					}
 
 					timeline.lock().unwrap().remove(id);

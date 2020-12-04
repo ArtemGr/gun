@@ -58,8 +58,8 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 
 	for (soul, node) in change.as_object().unwrap().iter() {
 		for (key, val) in node.as_object().unwrap().iter() {
-			if key == "_" {
-				break;
+			if let "_" | ">" = &key[..] {
+				continue;
 			}
 
 			let state = node["_"][">"][key].as_u64().unwrap();
@@ -80,7 +80,7 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 				Ok(ham) => ham,
 				Err(err) => {
 					log::error!("{}", err);
-					break;
+					continue;
 				},
 			};
 
@@ -88,14 +88,14 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 				if ham.defer {
 					log::info!("DEFER {} {}", key, val);
 				}
-				break;
+				continue;
 			}
 
-			if graph.get(soul).is_none() {
+			if graph[soul].is_null() {
 				graph[soul] = json!({"_":{"#":soul, ">":{}}});
 			}
 
-			if diff.get(soul).is_none() {
+			if diff[soul].is_null() {
 				diff[soul] = json!({"_":{"#":soul, ">":{}}});
 			}
 
