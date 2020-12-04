@@ -16,7 +16,6 @@ use crate::dedup::Dedup;
 struct Store {
 	peers: HashMap<SocketAddr, UnboundedSender<Message>>,
 	dedup: Dedup,
-	count: u32,
 }
 
 impl Store {
@@ -24,18 +23,17 @@ impl Store {
 		Self {
 			peers: HashMap::new(),
 			dedup: Dedup::new(),
-			count: 0,
 		}
 	}
 }
 
 async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr: SocketAddr) {
-    println!("Incoming TCP connection from: {}", addr);
+    log::info!("Incoming TCP connection from: {}", addr);
 
     let ws_stream = tokio_tungstenite::accept_async(raw_stream)
         .await
         .expect("Error during the websocket handshake occurred");
-    println!("WebSocket connection established: {}", addr);
+    log::info!("WebSocket connection established: {}", addr);
 
     let (tx, rx) = unbounded();
     store.lock().unwrap().peers.insert(addr, tx.clone());
@@ -53,7 +51,7 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
 
         if store.lock().unwrap().dedup.check(id.clone()).is_none() {
         	store.lock().unwrap().dedup.track(id);
-        	println!("recieved: {:?}", msg);
+        	log::info!("{} received: {:?}", addr, msg);
 
             for tx in store.lock().unwrap().peers.values() {
                 tx.unbounded_send(msg_str.into()).unwrap();
@@ -68,7 +66,7 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
     pin_mut!(broadcast_incoming, receive_from_others);
     future::select(broadcast_incoming, receive_from_others).await;
 
-    println!("{} disconnected", &addr);
+    log::info!("{} disconnected", &addr);
     store.lock().unwrap().peers.remove(&addr);
 }
 
@@ -78,7 +76,7 @@ pub async fn boot_socket() -> Result<()> {
 
     let try_socket = TcpListener::bind(&addr).await;
     let listener = try_socket.expect("Failed to bind");
-    println!("Listening on: {}", addr);
+    log::info!("Listening on: {}", addr);
 
     while let Ok((stream, addr)) = listener.accept().await {
         tokio::spawn(handle_connection(store.clone(), stream, addr));

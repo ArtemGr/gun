@@ -21,6 +21,7 @@ anyhow = "1.0"
 fnv = "1.0"
 futures-channel = "0.3"
 futures-util = { version = "0.3", default-features = false, features = ["async-await", "sink", "std"] }
+log = "0.4"
 serde_json = "1.0"
 tokio = { version = "0.3", default-features = false, features = ["io-std", "macros", "rt-multi-thread", "stream", "time"] }
 tokio-tungstenite = "0.12"
@@ -30,3 +31,4 @@ tungstenite = "0.11"
 #no_std = ["bare-io"]
 
 [dev-dependencies]
+env_logger = "0.8"
