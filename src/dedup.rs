@@ -5,7 +5,7 @@ use std::{
 use fnv::FnvHashMap;
 use tokio::time::{sleep, Duration};
 
-use crate::util::now;
+use crate::util::timestamp;
 
 const MAX: u64 = 1000;
 const AGE: u64 = 1000 * 9;
@@ -32,7 +32,7 @@ impl Dedup {
 	}
 
 	pub fn track(&mut self, id: String) -> String {
-		self.timeline.lock().unwrap().insert(id.clone(), now());
+		self.timeline.lock().unwrap().insert(id.clone(), timestamp());
 
 		if !*self.timeout.lock().unwrap() {
 			*self.timeout.lock().unwrap() = true;
@@ -44,7 +44,7 @@ impl Dedup {
 				sleep(Duration::from_millis(1000)).await;
 
 				for (id, time) in &*timeline.lock().unwrap() {
-					if AGE > now() - time {
+					if AGE > timestamp() - time {
 						break;
 					}
 
