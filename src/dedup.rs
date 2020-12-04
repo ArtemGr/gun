@@ -25,16 +25,16 @@ impl Dedup {
 		}
 	}
 
-	pub fn check(&mut self, id: String) -> Option<String> {
-		if self.timeline.lock().unwrap().contains_key(&id) {
-			Some(self.track(id))
+	pub fn check(&mut self, soul: String) -> Option<String> {
+		if self.timeline.lock().unwrap().contains_key(&soul) {
+			Some(self.track(soul))
 		} else {
 			None
 		}
 	}
 
-	pub fn track(&mut self, id: String) -> String {
-		self.timeline.lock().unwrap().insert(id.clone(), timestamp());
+	pub fn track(&mut self, soul: String) -> String {
+		self.timeline.lock().unwrap().insert(soul.clone(), timestamp());
 
 		if !*self.timeout.lock().unwrap() {
 			*self.timeout.lock().unwrap() = true;
@@ -45,24 +45,24 @@ impl Dedup {
 			tokio::spawn(async move {
 				sleep(Duration::from_millis(1000)).await;
 
-				for (id, time) in &*timeline.lock().unwrap() {
+				for (soul, time) in &*timeline.lock().unwrap() {
 					if AGE > timestamp() - time {
 						continue;
 					}
 
-					timeline.lock().unwrap().remove(id);
+					timeline.lock().unwrap().remove(soul);
 				}
 
 				*timeout.lock().unwrap() = false;
 			});
 		}
 
-		id
+		soul
 	}
 }
 
-pub fn random_id() -> String {
-	let id = rand::thread_rng().gen_range(0, 1000000);
-	let id = format_radix(id, 36);
-	id.substring(id.len() - 3, id.len()).into()
+pub fn random_soul() -> String {
+	let soul = rand::thread_rng().gen_range(0, 1000000);
+	let soul = format_radix(soul, 36);
+	soul.substring(soul.len() - 3, soul.len()).into()
 }

@@ -11,7 +11,7 @@ use serde_json::{json, Value};
 use tokio::{net::{TcpListener, TcpStream}};
 use tungstenite::protocol::Message;
 
-use crate::dedup::{random_id, Dedup};
+use crate::dedup::{random_soul, Dedup};
 use crate::get::get;
 use crate::ham::mix_ham;
 use crate::util::{parse_json, SOUL};
@@ -61,13 +61,13 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
 
         match parse_json(msg_str) {
             Some(msg) => {
-                let id = msg["#"]
+                let soul = msg[SOUL]
                     .as_str()
-                    .expect("ID must be a string")
+                    .expect("Soul must be a string")
                     .to_owned();
 
-                if store.lock().unwrap().dedup.check(id.clone()).is_none() {
-                    store.lock().unwrap().dedup.track(id);
+                if store.lock().unwrap().dedup.check(soul.clone()).is_none() {
+                    store.lock().unwrap().dedup.track(soul);
 
                     if !msg["put"].is_null() {
                         mix_ham(msg["put"].clone(), &mut store.lock().unwrap().graph);
@@ -79,7 +79,7 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
 
                         if let Some(ack) = ack {
                             let data = json!({
-                                SOUL: store.lock().unwrap().dedup.track(random_id()),
+                                SOUL: store.lock().unwrap().dedup.track(random_soul()),
                                 "@": msg[SOUL],
                                 "put": ack,
                             }).to_string();
