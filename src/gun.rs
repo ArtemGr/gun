@@ -5,8 +5,9 @@
 
 use anyhow::Result;
 
-mod dup;
+mod dedup;
 mod socket;
+mod util;
 
 pub fn foobar() {}
 

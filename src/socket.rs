@@ -2,21 +2,20 @@ use std::{
 	collections::HashMap,
     net::SocketAddr,
     sync::{Arc, Mutex},
-    time::Duration,
 };
 
 use anyhow::Result;
 use futures_channel::mpsc::{unbounded, UnboundedSender};
 use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
-use serde_json::{json, Value};
-use tokio::{net::{TcpListener, TcpStream}, time};
+use serde_json::Value;
+use tokio::{net::{TcpListener, TcpStream}};
 use tungstenite::protocol::Message;
 
-use crate::dup::Dup;
+use crate::dedup::Dedup;
 
 struct Store {
 	peers: HashMap<SocketAddr, UnboundedSender<Message>>,
-	dup: Dup,
+	dedup: Dedup,
 	count: u32,
 }
 
@@ -24,7 +23,7 @@ impl Store {
 	pub fn new() -> Self {
 		Self {
 			peers: HashMap::new(),
-			dup: Dup::new(),
+			dedup: Dedup::new(),
 			count: 0,
 		}
 	}
@@ -41,45 +40,25 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
     let (tx, rx) = unbounded();
     store.lock().unwrap().peers.insert(addr, tx.clone());
 
-    // Begin temporary
-
-	let mut interval = time::interval(Duration::from_millis(1000));
-	let store_clone = store.clone();
-
-    tokio::spawn(async move {
-    	while let _ = interval.tick().await {
-    		store_clone.lock().unwrap().count += 1;
-
-    		let id = store_clone.lock().unwrap().count.to_string();
-    		let id = store_clone.lock().unwrap().dup.track(id);
-
-    		let msg = json!({
-    			"#": id,
-    		});
-
-    		tx.unbounded_send(msg.to_string().into()).unwrap();
-	    }
-    });
-
-    // End temporary
-
     let (outgoing, incoming) = ws_stream.split();
 
     let broadcast_incoming = incoming.try_for_each(|msg| {
-    	let msg = msg.to_text().unwrap();
-    	let msg: Value = serde_json::from_str(msg).expect("Could not parse JSON");
+    	let msg_str = msg.to_text().unwrap();
+    	let msg: Value = serde_json::from_str(msg_str).expect("Could not parse JSON");
 
         let id = msg["#"]
         	.as_str()
         	.expect("ID must be a string")
         	.to_owned();
 
-        let dup = &mut store.lock().unwrap().dup;
-
-        // if dup.check(id.clone()).is_none() {
-        	dup.track(id);
+        if store.lock().unwrap().dedup.check(id.clone()).is_none() {
+        	store.lock().unwrap().dedup.track(id);
         	println!("recieved: {:?}", msg);
-        // }
+
+            for tx in store.lock().unwrap().peers.values() {
+                tx.unbounded_send(msg_str.into()).unwrap();
+            }
+        }
 
         future::ok(())
     });

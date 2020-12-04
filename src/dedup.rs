@@ -1,27 +1,21 @@
 use std::{
 	sync::{Arc, Mutex},
-	time::{SystemTime, UNIX_EPOCH},
 };
 
 use fnv::FnvHashMap;
 use tokio::time::{sleep, Duration};
 
+use crate::util::now;
+
 const MAX: u64 = 1000;
 const AGE: u64 = 1000 * 9;
 
-fn now() -> u64 {
-	SystemTime::now()
-    	.duration_since(UNIX_EPOCH)
-    	.expect("Impossible! Time went backwards!")
-    	.as_secs()
-}
-
-pub struct Dup {
+pub struct Dedup {
 	timeline: Arc<Mutex<FnvHashMap<String, u64>>>,
 	timeout: Arc<Mutex<bool>>,
 }
 
-impl Dup {
+impl Dedup {
 	pub fn new() -> Self {
 		Self {
 			timeline: Arc::new(Mutex::new(FnvHashMap::default())),
