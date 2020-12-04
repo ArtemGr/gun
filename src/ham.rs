@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use serde_json::{json, Map, Value};
+use serde_json::{json, Value};
 
 use crate::util::timestamp;
 
@@ -54,7 +54,7 @@ fn ham(
 
 pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 	let machine = timestamp();
-	let mut diff = Map::new();
+	let mut diff = json!({});
 
 	for (soul, node) in change.as_object().unwrap().iter() {
 		for (key, val) in node.as_object().unwrap().iter() {
@@ -91,21 +91,21 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 				break;
 			}
 
-			if diff.get(soul).is_none() {
-				diff.insert(soul.into(), json!({"_":{"#":soul, ">":{}}}));
-			}
-
 			if graph.get(soul).is_none() {
-				graph.as_object_mut().unwrap().insert(soul.into(), json!({"_":{"#":soul, ">":{}}}));
+				graph[soul] = json!({"_":{"#":soul, ">":{}}});
 			}
 
-			graph.get_mut(soul).unwrap().as_object_mut().unwrap().insert(key.into(), json!(val));
-			diff.get_mut(soul).unwrap().as_object_mut().unwrap().insert(key.into(), json!(val));
+			if diff.get(soul).is_none() {
+				diff[soul] = json!({"_":{"#":soul, ">":{}}});
+			}
 
-			graph.get_mut(soul).unwrap().get_mut("_").unwrap().get_mut(">").unwrap().as_object_mut().unwrap().insert(key.into(), json!(state));
-			diff.get_mut(soul).unwrap().get_mut("_").unwrap().get_mut(">").unwrap().as_object_mut().unwrap().insert(key.into(), json!(state));
+			graph[soul][key] = json!(val);
+			diff[soul][key] = json!(val);
+
+			graph[soul]["_"][">"][key] = json!(state);
+			diff[soul]["_"][">"][key] = json!(state);
    		}
 	}
 
-	Value::Object(diff)
+	diff
 }
