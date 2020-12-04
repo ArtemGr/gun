@@ -51,10 +51,13 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
 
         if store.lock().unwrap().dedup.check(id.clone()).is_none() {
         	store.lock().unwrap().dedup.track(id);
-        	log::info!("{} received: {:?}", addr, msg);
+        	log::info!("{}: received: {:?}", addr, msg);
 
-            for tx in store.lock().unwrap().peers.values() {
-                tx.unbounded_send(msg_str.into()).unwrap();
+            for (addr, tx) in &store.lock().unwrap().peers {
+                match tx.unbounded_send(msg_str.into()) {
+                    Ok(_) => (),
+                    Err(err) => log::error!("{}: {}", addr, err),
+                }
             }
         }
 
