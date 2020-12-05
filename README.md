@@ -1,6 +1,6 @@
 # gun
 
-The [Gun database](https://github.com/amark/gun), in Rust.
+The [Gun database](https://github.com/amark/gun), in Rust. Gun is an open source cybersecurity protocol for syncing decentralized graph data. 
 
 You can find out more about the original JavaScript implementation here: https://gun.eco/docs/.
 
