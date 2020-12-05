@@ -77,19 +77,22 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
                     if !msg["get"].is_null() {
                         let ack = lex_from_graph(msg["get"].clone(), &store.lock().unwrap().graph);
 
-                        if let Some(ack) = ack {
-                            let data = json!({
-                                SOUL: store.lock().unwrap().dedup.track(random_soul()),
-                                "@": msg[SOUL],
-                                "put": ack,
-                            }).to_string();
+                        match ack {
+                            Ok(ack) => {
+                                let data = json!({
+                                    SOUL: store.lock().unwrap().dedup.track(random_soul()),
+                                    "@": msg[SOUL],
+                                    "put": ack,
+                                }).to_string();
 
-                            emit(
-                                &store.lock().unwrap().peers,
-                                data.into(),
-                            );
+                                emit(
+                                    &store.lock().unwrap().peers,
+                                    data.into(),
+                                );
 
-                            log::info!("{}: GET {}", addr, ack);
+                                log::info!("{}: GET {}", addr, ack);
+                            },
+                            Err(err) => log::error!("{}", err),
                         }
                     }
                     
