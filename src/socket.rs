@@ -12,7 +12,7 @@ use tokio::{net::{TcpListener, TcpStream}};
 use tungstenite::protocol::Message;
 
 use crate::dedup::{random_soul, Dedup};
-use crate::get::get;
+use crate::get::lex_from_graph;
 use crate::ham::mix_ham;
 use crate::util::{parse_json, SOUL};
 
@@ -75,7 +75,7 @@ async fn handle_connection(store: Arc<Mutex<Store>>, raw_stream: TcpStream, addr
                     }
 
                     if !msg["get"].is_null() {
-                        let ack = get(msg["get"].clone(), &store.lock().unwrap().graph);
+                        let ack = lex_from_graph(msg["get"].clone(), &store.lock().unwrap().graph);
 
                         if let Some(ack) = ack {
                             let data = json!({
