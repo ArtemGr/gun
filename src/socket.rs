@@ -12,9 +12,8 @@ use tokio::{net::{TcpListener, TcpStream}};
 use tungstenite::protocol::Message;
 
 use crate::dedup::{random_soul, Dedup};
-use crate::get::lex_from_graph;
 use crate::ham::mix_ham;
-use crate::util::{parse_json, SOUL};
+use crate::util::{lex_from_graph, parse_json, SOUL};
 
 type PeerList = HashMap<SocketAddr, UnboundedSender<Message>>;
 

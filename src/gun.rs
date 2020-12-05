@@ -6,7 +6,6 @@
 use anyhow::Result;
 
 mod dedup;
-mod get;
 mod ham;
 mod socket;
 mod util;
