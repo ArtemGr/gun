@@ -10,5 +10,5 @@ fn main() -> Result<()> {
 	plugins::tungstenite::plug_into(&mut gun);
 	let gun = gun.build();
 
-	gun.start(&[])
+	gun.start()
 }

@@ -2,6 +2,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value as JSON};
+use uuid::Uuid;
 
 pub const SOUL: &str = "#";
 pub const METADATA: &str = "_";
@@ -63,6 +64,10 @@ pub fn parse_json(json: &str) -> Option<JSON> {
 			None
 		},
 	}
+}
+
+pub fn uuid() -> String {
+    Uuid::new_v4().to_string()
 }
 
 pub fn format_radix(mut x: u32, radix: u32) -> String {
