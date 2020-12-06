@@ -5,11 +5,11 @@ authors = [
   "Artemciy <artemciy@gmail.com>",
   "GiraffeKey <giraffekey@tutanota.com>",
 ]
-version = "0.1.1"
+version = "0.1.2"
 edition = "2018"
 license = "MIT"
 keywords = ["p2p", "graph", "offline-first", "crdt", "database"]
-#documentation = "docs.rs.."
+documentation = "https://docs.rs/gun/"
 repository = "https://github.com/ArtemGr/gun"
 
 [lib]
