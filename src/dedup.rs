@@ -1,11 +1,12 @@
 use std::{
 	sync::{Arc, Mutex},
+	thread,
+	time::Duration,
 };
 
 use fnv::FnvHashMap;
 use rand::prelude::*;
 use substring::Substring;
-use tokio::time::{sleep, Duration};
 
 use crate::util::{format_radix, timestamp};
 
@@ -42,8 +43,8 @@ impl Dedup {
 			let timeline = self.timeline.clone();
 			let timeout = self.timeout.clone();
 
-			tokio::spawn(async move {
-				sleep(Duration::from_millis(1000)).await;
+			thread::spawn(move || {
+				thread::sleep(Duration::from_millis(1000));
 
 				for (soul, time) in &*timeline.lock().unwrap() {
 					if AGE > timestamp() - time {

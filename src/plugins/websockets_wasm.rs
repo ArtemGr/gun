@@ -2,7 +2,7 @@ use anyhow::Result;
 
 use crate::{GunBuilder, GunFunctions};
 
-pub fn start() -> Result<()> {
+pub fn start(peers: &[&str]) -> Result<()> {
 	println!("Websockets WASM");
 	Ok(())
 }

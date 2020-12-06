@@ -6,14 +6,13 @@
 use anyhow::Result;
 
 pub mod plugins;
+pub mod util;
 mod dedup;
 mod ham;
-mod socket;
-mod util;
 
 #[derive(Clone)]
 pub struct GunFunctions {
-	pub start: fn() -> Result<()>,
+	pub start: fn(&[&str]) -> Result<()>,
 }
 
 pub struct Gun {
@@ -21,8 +20,8 @@ pub struct Gun {
 }
 
 impl Gun {
-	pub fn start(&self) -> Result<()> {
-		(self.functions.start)()
+	pub fn start(&self, peers: &[&str]) -> Result<()> {
+		(self.functions.start)(peers)
 	}
 }
 
