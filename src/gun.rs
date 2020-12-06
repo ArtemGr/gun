@@ -5,13 +5,43 @@
 
 use anyhow::Result;
 
+pub mod plugins;
 mod dedup;
 mod ham;
 mod socket;
 mod util;
 
-pub fn foobar() {}
+#[derive(Clone)]
+pub struct GunFunctions {
+	pub start: fn() -> Result<()>,
+}
 
-pub async fn start() -> Result<()> {
-	Ok(socket::boot_socket().await?)
+pub struct Gun {
+	functions: GunFunctions,
+}
+
+impl Gun {
+	pub fn start(&self) -> Result<()> {
+		(self.functions.start)()
+	}
+}
+
+pub struct GunBuilder {
+	pub functions: GunFunctions,
+}
+
+impl GunBuilder {
+	pub fn new() -> Self {
+		Self {
+			functions: GunFunctions {
+				start: plugins::websockets::start,
+			}
+		}
+	}
+
+	pub fn build(&self) -> Gun {
+		Gun {
+			functions: self.functions.clone(),
+		}
+	}
 }

@@ -1,9 +1,14 @@
 use anyhow::Result;
+use gun::{plugins, GunBuilder};
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> Result<()> {
 	env_logger::Builder::from_default_env()
 	    .filter(None, log::LevelFilter::Info)
 	    .init();
-	Ok(gun::start().await?)
+
+	let mut gun = GunBuilder::new();
+	plugins::tungstenite::plug_into(&mut gun);
+	let gun = gun.build();
+
+	gun.start()
 }

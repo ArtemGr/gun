@@ -29,8 +29,8 @@ fn ham(
 	machine_state: u64,
 	incoming_state: u64,
 	current_state: u64,
-	incoming_value: String,
-	current_value: String,
+	incoming_value: &str,
+	current_value: &str,
 ) -> Result<HAM> {
 	if machine_state < incoming_state {
         return Ok(HAM { defer: true, ..Default::default() });
@@ -73,10 +73,10 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 			let val = val.to_string();
 			let known = match graph.get(soul) {
 				Some(node) => node[key].to_string(),
-				None => "".to_string(),
+				None => "".to_owned(),
 			};
 
-			let ham = match ham(machine, state, was, val.clone(), known) {
+			let ham = match ham(machine, state, was, &val, &known) {
 				Ok(ham) => ham,
 				Err(err) => {
 					log::error!("{}", err);
@@ -92,11 +92,11 @@ pub fn mix_ham(change: Value, graph: &mut Value) -> Value {
 			}
 
 			if graph[soul].is_null() {
-				graph[soul] = json!({METADATA:{SOUL:soul, STATE:{}}});
+				graph[soul] = json!({METADATA: {SOUL: soul, STATE: {}}});
 			}
 
 			if diff[soul].is_null() {
-				diff[soul] = json!({METADATA:{SOUL:soul, STATE:{}}});
+				diff[soul] = json!({METADATA: {SOUL: soul, STATE: {}}});
 			}
 
 			graph[soul][key] = json!(val);
