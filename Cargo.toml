@@ -16,23 +16,23 @@ repository = "https://github.com/ArtemGr/gun"
 name = "gun"
 path = "src/gun.rs"
 
+[features]
+default = ["std", "default-uuid"]
+std = ["tungstenite"]
+default-uuid = ["uuid"]
+
 [dependencies]
 anyhow = "1.0"
-async-std = "1.7"
 fnv = "1.0"
-futures = "0.3"
 log = "0.4"
 rand = "0.7"
 serde_json = "1.0"
-smallstr = "0.2"
-tungstenite = "0.11"
-uuid = { version = "0.8", features = ["v4"] }
+
+tungstenite = { version = "0.11", optional = true }
+uuid = { version = "0.8", features = ["v4"], optional = true }
 
 [target.'cfg(target_arch = "wasm-32")'.dependencies]
 wasm-bindgen = "0.2"
-
-[features]
-#no_std = ["bare-io"]
 
 [dev-dependencies]
 env_logger = "0.8"

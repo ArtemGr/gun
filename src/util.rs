@@ -1,5 +1,3 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value as JSON};
 use uuid::Uuid;
@@ -7,8 +5,6 @@ use uuid::Uuid;
 pub const SOUL: &str = "#";
 pub const METADATA: &str = "_";
 pub const STATE: &str = ">";
-
-pub type Str = smallstr::SmallString<[u8; 16]>;
 
 pub fn lex_from_graph(lex: JSON, graph: &JSON) -> Result<JSON> {
     let soul = match lex.get(SOUL) {
@@ -58,6 +54,8 @@ pub fn timestamp() -> f64 {
 
 #[cfg(not(target_arch = "wasm32"))]
 pub fn timestamp() -> f64 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+
     let millis = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("Impossible! Time went backwards!")
@@ -76,6 +74,7 @@ pub fn parse_json(json: &str) -> Option<JSON> {
 	}
 }
 
-pub fn uuid() -> Str {
-    Str::from_buf(*Uuid::new_v4().as_bytes()).unwrap()
+#[cfg(feature = "default-uuid")]
+pub fn uuid() -> String {
+    Uuid::new_v4().to_string()
 }

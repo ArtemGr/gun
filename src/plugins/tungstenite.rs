@@ -54,8 +54,8 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
                 .as_str()
                 .expect("Soul must be a string");
 
-            if store.lock().unwrap().dedup.check(soul).is_none() {
-                store.lock().unwrap().dedup.track(soul);
+            if store.lock().unwrap().dedup.check(soul.into()).is_none() {
+                store.lock().unwrap().dedup.track(soul.into());
 
                 if !msg["put"].is_null() {
                     mix_ham(msg["put"].clone(), &mut store.lock().unwrap().graph);
@@ -67,7 +67,7 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
 
                     match ack {
                         Ok(ack) => {
-                            let soul = store.lock().unwrap().dedup.track(random_soul().as_str());
+                            let soul = store.lock().unwrap().dedup.track(random_soul());
 
                             let data = json!({
                                 SOUL: soul.as_str(),

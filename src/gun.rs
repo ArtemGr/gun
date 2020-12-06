@@ -1,4 +1,4 @@
-// #![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![feature(non_ascii_idents)]
 #![allow(unknown_lints, uncommon_codepoints)]
 
@@ -8,8 +8,6 @@ pub mod plugins;
 pub mod util;
 mod dedup;
 mod ham;
-
-use crate::util::Str;
 
 #[derive(Clone)]
 pub struct GunFunctions {
@@ -21,7 +19,7 @@ pub struct GunOptions<'a> {
 	pub peers: &'a [&'a str],
 	pub radisk: bool,
 	pub local_storage: bool,
-	pub uuid: fn() -> Str,
+	pub uuid: fn() -> String,
 }
 
 #[derive(Clone)]
@@ -40,7 +38,10 @@ impl<'a> GunBuilder<'a> {
 				peers: &[],
 				radisk: true,
 				local_storage: true,
+				#[cfg(feature = "default-uuid")]
 				uuid: util::uuid,
+				#[cfg(not(feature = "default-uuid"))]
+				uuid: || "".to_owned(),
 			},
 		}
 	}
@@ -69,7 +70,7 @@ impl<'a> GunBuilder<'a> {
 		self.clone()
 	}
 
-	pub fn uuid(&mut self, uuid: fn() -> Str) -> Self {
+	pub fn uuid(&mut self, uuid: fn() -> String) -> Self {
 		self.options.uuid = uuid;
 		self.clone()
 	}
