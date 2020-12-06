@@ -8,6 +8,8 @@ pub const SOUL: &str = "#";
 pub const METADATA: &str = "_";
 pub const STATE: &str = ">";
 
+pub type Str = smallstr::SmallString<[u8; 16]>;
+
 pub fn lex_from_graph(lex: JSON, graph: &JSON) -> Result<JSON> {
     let soul = match lex.get(SOUL) {
         Some(soul) => match soul.as_str() {
@@ -49,11 +51,19 @@ pub fn lex_from_graph(lex: JSON, graph: &JSON) -> Result<JSON> {
     }
 }
 
-pub fn timestamp() -> u64 {
-	SystemTime::now()
-    	.duration_since(UNIX_EPOCH)
-    	.expect("Impossible! Time went backwards!")
-    	.as_secs()
+#[cfg(target_arch = "wasm32")]
+pub fn timestamp() -> f64 {
+    unimplemented!()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn timestamp() -> f64 {
+    let millis = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Impossible! Time went backwards!")
+        .as_millis();
+
+    millis as f64 / 1000.0
 }
 
 pub fn parse_json(json: &str) -> Option<JSON> {
@@ -66,23 +76,6 @@ pub fn parse_json(json: &str) -> Option<JSON> {
 	}
 }
 
-pub fn uuid() -> String {
-    Uuid::new_v4().to_string()
-}
-
-pub fn format_radix(mut x: u32, radix: u32) -> String {
-    let mut result = vec![];
-
-    loop {
-        let m = x % radix;
-        x = x / radix;
-
-        // will panic if you use a bad radix (< 2 or > 36).
-        result.push(std::char::from_digit(m, radix).unwrap());
-        if x == 0 {
-            break;
-        }
-    }
-
-    result.into_iter().rev().collect()
+pub fn uuid() -> Str {
+    Str::from_buf(*Uuid::new_v4().as_bytes()).unwrap()
 }

@@ -1,20 +1,17 @@
-use std::{
-	sync::{Arc, Mutex},
-	thread,
-	time::Duration,
-};
+use std::sync::{Arc, Mutex};
+use core::{char, str, time::Duration};
 
+use async_std::task;
 use fnv::FnvHashMap;
 use rand::prelude::*;
-use substring::Substring;
 
-use crate::util::{format_radix, timestamp};
+use crate::util::{timestamp, Str};
 
-const MAX: u64 = 1000;
-const AGE: u64 = 1000 * 9;
+const MAX: f64 = 1.0;
+const AGE: f64 = 9.0;
 
 pub struct Dedup {
-	timeline: Arc<Mutex<FnvHashMap<String, u64>>>,
+	timeline: Arc<Mutex<FnvHashMap<Str, f64>>>,
 	timeout: Arc<Mutex<bool>>,
 }
 
@@ -26,16 +23,16 @@ impl Dedup {
 		}
 	}
 
-	pub fn check(&mut self, soul: String) -> Option<String> {
-		if self.timeline.lock().unwrap().contains_key(&soul) {
+	pub fn check(&mut self, soul: &str) -> Option<Str> {
+		if self.timeline.lock().unwrap().contains_key(soul.into()) {
 			Some(self.track(soul))
 		} else {
 			None
 		}
 	}
 
-	pub fn track(&mut self, soul: String) -> String {
-		self.timeline.lock().unwrap().insert(soul.clone(), timestamp());
+	pub fn track(&mut self, soul: &str) -> Str {
+		self.timeline.lock().unwrap().insert(soul.into(), timestamp());
 
 		if !*self.timeout.lock().unwrap() {
 			*self.timeout.lock().unwrap() = true;
@@ -43,8 +40,8 @@ impl Dedup {
 			let timeline = self.timeline.clone();
 			let timeout = self.timeout.clone();
 
-			thread::spawn(move || {
-				thread::sleep(Duration::from_millis(1000));
+			task::spawn(async move {
+				task::sleep(Duration::from_secs(1)).await;
 
 				for (soul, time) in &*timeline.lock().unwrap() {
 					if AGE > timestamp() - time {
@@ -58,12 +55,21 @@ impl Dedup {
 			});
 		}
 
-		soul
+		Str::from(soul)
 	}
 }
 
-pub fn random_soul() -> String {
-	let soul = rand::thread_rng().gen_range(0, 1000000);
-	let soul = format_radix(soul, 36);
-	soul.substring(soul.len() - 3, soul.len()).into()
+pub fn random_soul() -> Str {
+	let radix = 36;
+	let mut n = rand::thread_rng().gen_range(radix*radix, radix*radix*radix);
+	let mut bytes = [0; 3];
+
+    for i in 0..3 {
+        let m = n % radix;
+        n = n / radix;
+
+        bytes[i] = char::from_digit(m, radix).unwrap() as u8;
+    }
+
+    Str::from_str(str::from_utf8(&bytes).unwrap())
 }

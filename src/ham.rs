@@ -26,13 +26,13 @@ impl Default for HAM {
 }
 
 fn ham(
-	machine_state: u64,
+	machine_state: f64,
 	incoming_state: u64,
 	current_state: u64,
 	incoming_value: &str,
 	current_value: &str,
 ) -> Result<HAM> {
-	if machine_state < incoming_state {
+	if machine_state < incoming_state as f64 {
         return Ok(HAM { defer: true, ..Default::default() });
     } else if incoming_state < current_state {
         return Ok(HAM { historical: true, ..Default::default() });

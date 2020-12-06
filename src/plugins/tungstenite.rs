@@ -36,12 +36,12 @@ impl Store {
 	}
 }
 
-fn emit(peers: &PeerList, msg: String) {
+fn emit<'a>(peers: &PeerList, msg: &str) {
     for socket in peers {
         match socket.try_lock() {
         	Ok(mut socket) => socket
-        		.write_message(Message::Text(msg.clone()))
-        		.unwrap_or_else(|err| log::error!("{}", err)),
+        		.write_message(Message::Text(msg.into()))
+        		.unwrap_or_else(|err| log::warn!("{}", err)),
         	Err(_) => (),
         }
     }
@@ -52,10 +52,9 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
         Some(msg) => {
             let soul = msg[SOUL]
                 .as_str()
-                .expect("Soul must be a string")
-                .to_owned();
+                .expect("Soul must be a string");
 
-            if store.lock().unwrap().dedup.check(soul.clone()).is_none() {
+            if store.lock().unwrap().dedup.check(soul).is_none() {
                 store.lock().unwrap().dedup.track(soul);
 
                 if !msg["put"].is_null() {
@@ -68,15 +67,17 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
 
                     match ack {
                         Ok(ack) => {
+                            let soul = store.lock().unwrap().dedup.track(random_soul().as_str());
+
                             let data = json!({
-                                SOUL: store.lock().unwrap().dedup.track(random_soul()),
+                                SOUL: soul.as_str(),
                                 "@": msg[SOUL],
                                 "put": ack,
                             }).to_string();
 
                             emit(
                                 &store.lock().unwrap().peers,
-                                data.into(),
+                                data.as_str(),
                             );
 
                             log::info!("GET {}", ack);
@@ -85,7 +86,7 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
                     }
                 }
                 
-                emit(&store.lock().unwrap().peers, msg_str.into());
+                emit(&store.lock().unwrap().peers, msg_str);
             }
         },
         None => (),
