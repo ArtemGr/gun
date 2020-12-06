@@ -14,6 +14,8 @@ If you are interested in joining the development team please join our Discord: h
 
 While the version is “0.*” the port might align towards exploratory programming and rapid prototyping. [Performance Testing Speed Development](https://youtu.be/BEqH-oZ4UXI) is welcome, but at this stage it is okay to have performance gaps and regressions in the code
 
+Also, no `semver` for now. API will stabilize when we're happy with how GUN works in the Linux kernel and WASM, how pluggable architecture is organized, and go through a number of performance optimizations
+
 ## nightly
 
 The project is using `non_ascii_idents` and other such Nightly features. Presently tested on nightly-2020-11-20
