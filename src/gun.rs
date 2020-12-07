@@ -7,12 +7,16 @@ use anyhow::Result;
 pub mod plugins;
 pub mod util;
 mod dedup;
+mod get;
 mod ham;
 
-#[derive(Clone)]
-pub struct GunFunctions {
-	pub start: fn(&[&str]) -> Result<()>,
-}
+#[cfg(feature = "std")]
+use std::rc::Rc;
+
+use crate::{
+	get::GunGet,
+	plugins::GunPlugin,
+};
 
 #[derive(Clone)]
 pub struct GunOptions<'a> {
@@ -20,64 +24,79 @@ pub struct GunOptions<'a> {
 	pub radisk: bool,
 	pub local_storage: bool,
 	pub uuid: fn() -> String,
+	pub port: u16,
+}
+
+impl Default for GunOptions<'_> {
+	fn default() -> Self {
+		Self {
+			peers: &[],
+			radisk: true,
+			local_storage: true,
+			#[cfg(feature = "default-uuid")]
+			uuid: util::uuid,
+			#[cfg(not(feature = "default-uuid"))]
+			uuid: || "".to_owned(),
+			port: 8080,
+		}
+	}
 }
 
 #[derive(Clone)]
 pub struct GunBuilder<'a> {
-	pub functions: GunFunctions,
+	#[cfg(feature = "std")]
+	pub plugin: Rc<dyn GunPlugin + 'a>,
 	pub options: GunOptions<'a>,
 }
 
 impl<'a> GunBuilder<'a> {
 	pub fn new() -> Self {
 		Self {
-			functions: GunFunctions {
-				start: plugins::websockets::start,
-			},
-			options: GunOptions {
-				peers: &[],
-				radisk: true,
-				local_storage: true,
-				#[cfg(feature = "default-uuid")]
-				uuid: util::uuid,
-				#[cfg(not(feature = "default-uuid"))]
-				uuid: || "".to_owned(),
-			},
+			plugin: Rc::new(plugins::tungstenite::Tungstenite::new()),
+			options: GunOptions::default(),
 		}
 	}
 
 	pub fn new_with_options(options: GunOptions<'a>) -> Self {
 		Self {
-			functions: GunFunctions {
-				start: plugins::websockets::start,
-			},
+			plugin: Rc::new(plugins::tungstenite::Tungstenite::new()),
 			options,
 		}
 	}
 
-	pub fn peers(&mut self, peers: &'a [&str]) -> Self {
-		self.options.peers = peers;
-		self.clone()
+	pub fn peers(&self, peers: &'a [&str]) -> Self {
+		let mut gun = self.clone();
+		gun.options.peers = peers;
+		gun
 	}
 
-	pub fn radisk(&mut self, radisk: bool) -> Self {
-		self.options.radisk = radisk;
-		self.clone()
+	pub fn radisk(&self, radisk: bool) -> Self {
+		let mut gun = self.clone();
+		gun.options.radisk = radisk;
+		gun
 	}
 
-	pub fn local_storage(&mut self, local_storage: bool) -> Self {
-		self.options.local_storage = local_storage;
-		self.clone()
+	pub fn local_storage(&self, local_storage: bool) -> Self {
+		let mut gun = self.clone();
+		gun.options.local_storage = local_storage;
+		gun
 	}
 
-	pub fn uuid(&mut self, uuid: fn() -> String) -> Self {
-		self.options.uuid = uuid;
-		self.clone()
+	pub fn uuid(&self, uuid: fn() -> String) -> Self {
+		let mut gun = self.clone();
+		gun.options.uuid = uuid;
+		gun
+	}
+
+	pub fn port(&self, port: u16) -> Self {
+		let mut gun = self.clone();
+		gun.options.port = port;
+		gun
 	}
 
 	pub fn build(&self) -> Gun {
 		let gun = Gun {
-			functions: self.functions.clone(),
+			plugin: self.plugin.clone(),
 			options: self.options.clone(),
 		};
 
@@ -88,12 +107,25 @@ impl<'a> GunBuilder<'a> {
 }
 
 pub struct Gun<'a> {
-	functions: GunFunctions,
+	#[cfg(feature = "std")]
+	plugin: Rc<dyn GunPlugin + 'a>,
 	options: GunOptions<'a>,
 }
 
-impl Gun<'_> {
+impl<'a> Gun<'a> {
 	pub fn start(&self) -> Result<()> {
-		(self.functions.start)(self.options.peers)
+		self.plugin.start(&self.options)
+	}
+
+	pub fn opt(&mut self, options: GunOptions<'a>) {
+		self.options = options;
+	}
+
+	pub fn get(&self, key: &'a str) -> GunGet<'a> {
+		GunGet::new(self.plugin.clone(), key)
+	}
+
+	pub fn block(&self) {
+		loop {}
 	}
 }

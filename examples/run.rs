@@ -1,14 +1,32 @@
 use anyhow::Result;
-use gun::{plugins, GunBuilder};
+use gun::GunBuilder;
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+struct ASDF {
+	name: String,
+}
 
 fn main() -> Result<()> {
 	env_logger::Builder::from_default_env()
 	    .filter(None, log::LevelFilter::Info)
 	    .init();
 
-	let mut gun = GunBuilder::new();
-	plugins::tungstenite::plug_into(&mut gun);
+	let gun = GunBuilder::new();
 	let gun = gun.build();
 
-	gun.start()
+	gun.start()?;
+
+	std::thread::sleep(std::time::Duration::from_secs(5));
+
+	loop {
+		if let Ok(asdf) = gun.get("ASDF").value::<ASDF>() {
+			log::info!("{:?}", asdf);
+			break;
+		}
+	}
+
+	gun.block();
+
+	Ok(())
 }

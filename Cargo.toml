@@ -18,7 +18,7 @@ path = "src/gun.rs"
 
 [features]
 default = ["std", "default-uuid"]
-std = ["tungstenite"]
+std = ["tungstenite", "url"]
 default-uuid = ["uuid"]
 
 [dependencies]
@@ -26,9 +26,11 @@ anyhow = "1.0"
 fnv = "1.0"
 log = "0.4"
 rand = "0.7"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
 tungstenite = { version = "0.11", optional = true }
+url = { version = "2.2", optional = true }
 uuid = { version = "0.8", features = ["v4"], optional = true }
 
 [target.'cfg(target_arch = "wasm-32")'.dependencies]

@@ -19,7 +19,7 @@ peer.onopen = function(o){
       get: {'#': 'FDSA', '.': 'species'}
     }
     peer.send(JSON.stringify(msg));
-  },2000);
+  },1000);
   setTimeout(function(){
     var msg = {
       '#': dup.track(Dup.random()),
@@ -36,7 +36,7 @@ peer.onopen = function(o){
       }
     }
     peer.send(JSON.stringify(msg)); 
-  },1000 * Math.random());
+  },500 * Math.random());
   setTimeout(function(){
     var msg = {
       '#': dup.track(Dup.random()),
@@ -51,7 +51,7 @@ peer.onopen = function(o){
       }
     }
     peer.send(JSON.stringify(msg));
-  },1000 * Math.random());
+  },500 * Math.random());
 };
 peer.onclose = function(c){ console.log('close', c) };
 peer.onmessage = function(m){

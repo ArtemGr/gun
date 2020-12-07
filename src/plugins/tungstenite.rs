@@ -1,21 +1,24 @@
 use std::{
 	net::{TcpListener, TcpStream},
 	process,
+    rc::Rc,
 	str::from_utf8,
 	sync::{Arc, Mutex},
-	thread,
+	thread::{self, JoinHandle},
 };
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use serde_json::{json, Value as JSON};
-use tungstenite::{accept, handshake::HandshakeRole, Error, HandshakeError, Message, WebSocket};
+use tungstenite::{accept, connect, handshake::HandshakeRole, Error, HandshakeError, Message, WebSocket};
+use url::Url;
 
 use crate::{
 	dedup::{Dedup, random_soul},
 	GunBuilder,
-	GunFunctions,
+    GunOptions,
+    GunPlugin,
 	ham::mix_ham,
-	util::{lex_from_graph, parse_json, SOUL},
+	util::{lex_from_graph, parse_json, timestamp, SOUL},
 };
 
 type PeerList = Vec<Arc<Mutex<WebSocket<TcpStream>>>>;
@@ -24,6 +27,7 @@ struct Store {
 	peers: PeerList,
 	dedup: Dedup,
     graph: JSON,
+    last_msg: Option<String>,
 }
 
 impl Store {
@@ -32,22 +36,39 @@ impl Store {
 			peers: Vec::new(),
 			dedup: Dedup::new(),
             graph: json!({}),
+            last_msg: None,
 		}
 	}
 }
 
-fn emit<'a>(peers: &PeerList, msg: &str) {
+pub struct Tungstenite {
+    store: Arc<Mutex<Store>>,
+    handle: Option<JoinHandle<()>>,
+}
+
+impl Tungstenite {
+    pub fn new() -> Self {
+        Self {
+            store: Arc::new(Mutex::new(Store::new())),
+            handle: None,
+        }
+    }
+}
+    
+fn emit<'a>(peers: &PeerList, msg: String) {
     for socket in peers {
         match socket.try_lock() {
-        	Ok(mut socket) => socket
-        		.write_message(Message::Text(msg.into()))
-        		.unwrap_or_else(|err| log::warn!("{}", err)),
-        	Err(_) => (),
+            Ok(mut socket) => socket
+                .write_message(Message::Text(msg.clone()))
+                .unwrap_or_else(|err| log::warn!("{}", err)),
+            Err(_) => (),
         }
     }
 }
 
 fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
+    store.lock().unwrap().last_msg = Some(msg_str.into());
+
     match parse_json(msg_str) {
         Some(msg) => {
             let soul = msg[SOUL]
@@ -77,7 +98,7 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
 
                             emit(
                                 &store.lock().unwrap().peers,
-                                data.as_str(),
+                                data,
                             );
 
                             log::info!("GET {}", ack);
@@ -86,7 +107,7 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
                     }
                 }
                 
-                emit(&store.lock().unwrap().peers, msg_str);
+                emit(&store.lock().unwrap().peers, msg_str.into());
             }
         },
         None => (),
@@ -96,8 +117,8 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
 fn must_not_block<Role: HandshakeRole>(err: HandshakeError<Role>) -> Error {
     match err {
         HandshakeError::Interrupted(_) => {
-        	log::error!("Blocking socket would block");
-        	process::exit(0)
+            log::error!("Blocking socket would block");
+            process::exit(0)
         },
         HandshakeError::Failure(f) => f,
     }
@@ -106,50 +127,73 @@ fn must_not_block<Role: HandshakeRole>(err: HandshakeError<Role>) -> Error {
 fn handle_client(store: Arc<Mutex<Store>>, stream: TcpStream) -> tungstenite::Result<()> {
     let socket = accept(stream).map_err(must_not_block)?;
     let socket = Arc::new(Mutex::new(socket));
-	store.lock().unwrap().peers.push(socket.clone());
+    store.lock().unwrap().peers.push(socket.clone());
 
     loop {
-    	let mut socket = socket.lock().unwrap();
+        store.lock().unwrap().last_msg = None;
+        let mut socket = socket.lock().unwrap();
         match socket.read_message()? {
             Message::Text(msg) => {
-            	drop(socket);
-            	handle_message(&store, &msg)
+                drop(socket);
+                handle_message(&store, &msg)
             },
             Message::Binary(msg) => {
-            	drop(socket);
-            	handle_message(&store, from_utf8(msg.as_slice()).unwrap())
+                drop(socket);
+                handle_message(&store, from_utf8(msg.as_slice()).unwrap())
             },
             Message::Ping(_) | Message::Pong(_) | Message::Close(_) => (),
         }
     }
 }
 
-pub fn start(peers: &[&str]) -> Result<()> {
-	let server = TcpListener::bind("127.0.0.1:8080").unwrap();
-	let store = Arc::new(Mutex::new(Store::new()));
+impl GunPlugin for Tungstenite {
+    fn start(&self, options: &GunOptions) -> Result<()> {
+        let server = TcpListener::bind(format!("127.0.0.1:{}", options.port))?;
 
-	log::info!("Running on 127.0.0.1:8080");
+        log::info!("Running on 127.0.0.1:{}", options.port);
 
-    for stream in server.incoming() {
-    	let store = store.clone();
-        thread::spawn(move || match stream {
-            Ok(stream) => {
-                if let Err(err) = handle_client(store, stream) {
-                    match err {
-                        Error::ConnectionClosed | Error::Protocol(_) | Error::Utf8 => (),
-                        e => log::error!("{}", e),
-                    }
-                }
-            },
-            Err(e) => log::error!("Error accepting stream: {}", e),
+        for peer in options.peers {
+            connect(Url::parse(peer).unwrap())?;
+        }
+
+        let store = self.store.clone();
+        thread::spawn(move || {
+            for stream in server.incoming() {
+                let store = store.clone();
+                thread::spawn(move || match stream {
+                    Ok(stream) => {
+                        if let Err(err) = handle_client(store, stream) {
+                            match err {
+                                Error::ConnectionClosed | Error::Protocol(_) | Error::Utf8 => (),
+                                e => log::error!("{}", e),
+                            }
+                        }
+                    },
+                    Err(e) => log::error!("Error accepting stream: {}", e),
+                });
+            }
         });
+
+        Ok(())
     }
 
-	Ok(())
+    fn emit(&self, data: String) {
+        emit(&self.store.lock().unwrap().peers, data);
+    }
+
+    fn wait_for_data(&self, timeout: f64) -> Result<String> {
+        let begin = timestamp();
+        loop {
+            if let Some(data) = &self.store.lock().unwrap().last_msg {
+                return Ok(data.into());
+            }
+            if timestamp() - begin > timeout {
+                return Err(anyhow!("Data request timed out"));
+            }
+        }
+    }
 }
 
 pub fn plug_into(gun: &mut GunBuilder) {
-	gun.functions = GunFunctions {
-		start,
-	}
+    gun.plugin = Rc::new(Tungstenite::new());
 }
