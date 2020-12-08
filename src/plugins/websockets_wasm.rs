@@ -1,6 +1,8 @@
 use anyhow::Result;
+use async_trait::async_trait;
+use serde_json::Value as JSON;
 
-use crate::{GunBuilder, GunOptions, GunPlugin};
+use crate::{GunBuilder, GunOptions, Plugin, plugins::GunPlugin};
 
 pub struct WebsocketsWASM {}
 
@@ -10,15 +12,15 @@ impl WebsocketsWASM {
 	}
 }
 
+#[async_trait]
 impl GunPlugin for WebsocketsWASM {
-	fn start(&self, options: &GunOptions) -> Result<()> {
+	async fn start<'a>(&self, options: &GunOptions<'a>) -> Result<()> {
 		println!("Websockets WASM");
 		Ok(())
 	}
-	fn emit(&self, _: String) { todo!() }
-	fn wait_for_data(&self, timeout: f64) -> Result<String> { todo!() }
+	async fn once(&self, _: &str) -> JSON { todo!() }
 }
 
 pub fn plug_into(gun: &mut GunBuilder) {
-	gun.plugin = std::rc::Rc::new(Websockets::new());
+	gun.plugin = Plugin::new(Box::new(Websockets::new()));
 }

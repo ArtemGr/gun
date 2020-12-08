@@ -1,47 +1,90 @@
-#[cfg(feature = "std")]
-use std::rc::Rc;
-
 use anyhow::{anyhow, Result};
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 use serde_json::json;
 
 use crate::{
 	dedup::random_soul,
-	GunPlugin,
-	util::{parse_json, METADATA, SOUL},
+	util::{timestamp, Plugin, METADATA, SOUL, STATE},
 };
-
-const TIMEOUT: f64 = 5.0; // Can let user define this later
 
 pub struct GunGet<'a> {
 	#[cfg(feature = "std")]
-	plugin: Rc<dyn GunPlugin + 'a>,
+	plugin: Plugin<'a>,
 	key: &'a str,
 }
 
 impl<'a> GunGet<'a> {
-	pub fn new(plugin: Rc<dyn GunPlugin + 'a>, key: &'a str) -> Self {
+	pub fn new(plugin: Plugin<'a>, key: &'a str) -> Self {
 		Self {
 			plugin,
 			key,
 		}
 	}
 
-	pub fn value<T>(&self) -> Result<T> where T: DeserializeOwned {
+	pub async fn once<T>(&self, cb: fn(T)) -> Result<()> where T: DeserializeOwned {
+		let data = json!({
+            SOUL: random_soul(),
+            "get": { SOUL: self.key },
+        }).to_string();
+        
+		self.plugin.wait_for_connection();
+
+		loop {
+            self.plugin.emit(data.clone());
+            let begin = timestamp();
+            loop {
+                if let Some(data) = self.plugin.check(self.key) {
+	                match serde_json::from_value(data) {
+						Ok(res) => cb(res),
+						Err(err) => return Err(anyhow!(err)),
+					}
+
+					return Ok(())
+				}
+                if timestamp() - begin > 10.0 {
+                    break;
+                }
+            }
+        }
+	}
+
+	pub async fn on<T>(&self, cb: fn(T)) where T: DeserializeOwned {
+		let data = json!({
+            SOUL: random_soul(),
+            "get": { SOUL: self.key },
+        }).to_string();
+
+		self.plugin.wait_for_connection();
+        self.plugin.emit(data.clone());
+
+		loop {
+            if let Some(data) = self.plugin.check(self.key) {
+                match serde_json::from_value(data) {
+					Ok(res) => cb(res),
+					Err(err) => (),
+				}
+			}
+		}
+	}
+
+	pub async fn put<T>(&self, data: T) -> Result<()> where T: Serialize {
+		let mut data = json!(data);
+		// temp
+		data[METADATA] = json!({
+			SOUL: self.key,
+			STATE: { "name": 1, "color": 1 },
+		});
+
 		let data = json!({
 			SOUL: random_soul(),
-			"get": { SOUL: self.key },
+			"put": {
+				self.key: data,
+			},
 		}).to_string();
+
+		self.plugin.wait_for_connection();
 		self.plugin.emit(data);
 
-		let data = self.plugin.wait_for_data(TIMEOUT)?;
-		let data = parse_json(&data).unwrap();
-		let mut data = data["put"][self.key].clone();
-		data[METADATA].take();
-
-		match serde_json::from_value(data) {
-			Ok(res) => Ok(res),
-			Err(err) => Err(anyhow!(err)),
-		}
+		Ok(())
 	}
 }

@@ -18,17 +18,23 @@ path = "src/gun.rs"
 
 [features]
 default = ["std", "default-uuid"]
-std = ["tungstenite", "url"]
+std = ["futures-channel", "futures-util", "native-tls", "tokio", "tokio-tungstenite", "tungstenite", "url"]
 default-uuid = ["uuid"]
 
 [dependencies]
 anyhow = "1.0"
+async-trait = "0.1"
 fnv = "1.0"
 log = "0.4"
 rand = "0.7"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
+futures-channel = { version = "0.3", optional = true }
+futures-util = { version = "0.3", optional = true, default-features = false, features = ["async-await", "sink", "std"] }
+native-tls = { version = "0.2", optional = true }
+tokio = { version = "0.3", optional = true, features = ["io-std", "macros", "rt-multi-thread", "stream", "time"] }
+tokio-tungstenite = { version = "0.12", optional = true }
 tungstenite = { version = "0.11", optional = true }
 url = { version = "2.2", optional = true }
 uuid = { version = "0.8", features = ["v4"], optional = true }

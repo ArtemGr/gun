@@ -2,6 +2,11 @@ use anyhow::{anyhow, Result};
 use serde_json::{json, Value as JSON};
 use uuid::Uuid;
 
+use crate::plugins::GunPlugin;
+
+#[cfg(feature = "std")]
+pub type Plugin<'a> = std::sync::Arc<Box<dyn GunPlugin + Send + Sync + 'a>>;
+
 pub const SOUL: &str = "#";
 pub const METADATA: &str = "_";
 pub const STATE: &str = ">";

@@ -10,12 +10,10 @@ mod dedup;
 mod get;
 mod ham;
 
-#[cfg(feature = "std")]
-use std::rc::Rc;
-
 use crate::{
 	get::GunGet,
-	plugins::GunPlugin,
+	plugins::websockets_tokio::WebsocketsTokio,
+	util::Plugin,
 };
 
 #[derive(Clone)]
@@ -45,21 +43,21 @@ impl Default for GunOptions<'_> {
 #[derive(Clone)]
 pub struct GunBuilder<'a> {
 	#[cfg(feature = "std")]
-	pub plugin: Rc<dyn GunPlugin + 'a>,
+	pub plugin: Plugin<'a>,
 	pub options: GunOptions<'a>,
 }
 
 impl<'a> GunBuilder<'a> {
 	pub fn new() -> Self {
 		Self {
-			plugin: Rc::new(plugins::tungstenite::Tungstenite::new()),
+			plugin: Plugin::new(Box::new(WebsocketsTokio::new())),
 			options: GunOptions::default(),
 		}
 	}
 
 	pub fn new_with_options(options: GunOptions<'a>) -> Self {
 		Self {
-			plugin: Rc::new(plugins::tungstenite::Tungstenite::new()),
+			plugin: Plugin::new(Box::new(WebsocketsTokio::new())),
 			options,
 		}
 	}
@@ -94,7 +92,7 @@ impl<'a> GunBuilder<'a> {
 		gun
 	}
 
-	pub fn build(&self) -> Gun {
+	pub fn build(&self) -> Gun<'a> {
 		let gun = Gun {
 			plugin: self.plugin.clone(),
 			options: self.options.clone(),
@@ -108,13 +106,13 @@ impl<'a> GunBuilder<'a> {
 
 pub struct Gun<'a> {
 	#[cfg(feature = "std")]
-	plugin: Rc<dyn GunPlugin + 'a>,
+	plugin: Plugin<'a>,
 	options: GunOptions<'a>,
 }
 
 impl<'a> Gun<'a> {
-	pub fn start(&self) -> Result<()> {
-		self.plugin.start(&self.options)
+	pub async fn start(&self) -> Result<()> {
+		self.plugin.start(&self.options).await
 	}
 
 	pub fn opt(&mut self, options: GunOptions<'a>) {
@@ -123,9 +121,5 @@ impl<'a> Gun<'a> {
 
 	pub fn get(&self, key: &'a str) -> GunGet<'a> {
 		GunGet::new(self.plugin.clone(), key)
-	}
-
-	pub fn block(&self) {
-		loop {}
 	}
 }

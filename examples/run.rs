@@ -1,32 +1,41 @@
+use std::{sync::Arc, thread, time::Duration};
+
 use anyhow::Result;
 use gun::GunBuilder;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Deserialize)]
-struct ASDF {
+#[derive(Debug, Serialize, Deserialize)]
+struct Cat {
 	name: String,
+	color: String,
 }
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
 	env_logger::Builder::from_default_env()
 	    .filter(None, log::LevelFilter::Info)
 	    .init();
 
-	let gun = GunBuilder::new();
+	let gun = GunBuilder::new().peers(&["ws://e2eec.herokuapp.com/gun"]);
 	let gun = gun.build();
+	let gun = Arc::new(gun);
 
-	gun.start()?;
-
-	std::thread::sleep(std::time::Duration::from_secs(5));
-
-	loop {
-		if let Ok(asdf) = gun.get("ASDF").value::<ASDF>() {
-			log::info!("{:?}", asdf);
-			break;
+	let gun_clone = gun.clone();
+	tokio::spawn(async move {
+		match gun_clone.start().await {
+			Ok(_) => (),
+			Err(err) => {
+				log::error!("{}", err);
+				std::process::exit(1);
+			}
 		}
-	}
+	});
 
-	gun.block();
+	gun.get("cat").put(Cat { name: "henry".into(), color: "grey".into() }).await;
+
+	gun.get("cat").once(|cat: Cat| {
+		log::info!("{:?}", cat);
+	}).await;
 
 	Ok(())
 }
