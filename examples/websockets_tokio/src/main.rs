@@ -1,7 +1,8 @@
-use std::{sync::Arc, thread, time::Duration};
+use std::sync::Arc;
 
 use anyhow::Result;
 use gun::GunBuilder;
+use gun_websockets_tokio::WebsocketsTokio;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -16,7 +17,8 @@ async fn main() -> Result<()> {
 	    .filter(None, log::LevelFilter::Info)
 	    .init();
 
-	let gun = GunBuilder::new().peers(&["https://e2eec.herokuapp.com/gun"]);
+	let mut gun = GunBuilder::new().peers(&["https://e2eec.herokuapp.com/gun"]);
+	WebsocketsTokio::plug_into(&mut gun);
 	let gun = gun.build();
 	let gun = Arc::new(gun);
 

@@ -1,0 +1,12 @@
+[package]
+name = "gun-websockets-wasm"
+version = "0.1.0"
+authors = ["GiraffeKey <giraffekey@tutanota.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+serde_json = "1.0"
+
+gun = { version = "0.1", path = "../.." }

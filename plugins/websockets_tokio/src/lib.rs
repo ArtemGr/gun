@@ -13,11 +13,10 @@ use tokio_tungstenite::{connect_async, WebSocketStream};
 use tungstenite::protocol::Message;
 use url::Url;
 
-use crate::{
+use gun::{
 	dedup::{Dedup, random_soul},
 	GunBuilder,
     GunOptions,
-    Plugin,
     plugins::GunPlugin,
 	ham::mix_ham,
 	util::{lex_from_graph, parse_json, METADATA, SOUL},
@@ -53,6 +52,10 @@ impl WebsocketsTokio {
         Self {
             store: Arc::new(Mutex::new(Store::new())),
         }
+    }
+
+    pub fn plug_into(gun: &mut GunBuilder) {
+        gun.plugin = Arc::new(Box::new(WebsocketsTokio::new()));
     }
 }
     
@@ -185,8 +188,4 @@ impl GunPlugin for WebsocketsTokio {
             sleep(Duration::from_millis(500));
         }
     }
-}
-
-pub fn plug_into(gun: &mut GunBuilder) {
-    gun.plugin = Plugin::new(Box::new(WebsocketsTokio::new()));
 }

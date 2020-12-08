@@ -1,3 +1,8 @@
+#[cfg(feature = "std")]
+use std::sync::Arc;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value as JSON};
 use uuid::Uuid;
@@ -5,7 +10,7 @@ use uuid::Uuid;
 use crate::plugins::GunPlugin;
 
 #[cfg(feature = "std")]
-pub type Plugin<'a> = std::sync::Arc<Box<dyn GunPlugin + Send + Sync + 'a>>;
+pub type Plugin<'a> = Arc<Box<dyn GunPlugin + Send + Sync + 'a>>;
 
 pub const SOUL: &str = "#";
 pub const METADATA: &str = "_";
@@ -54,8 +59,12 @@ pub fn lex_from_graph(lex: JSON, graph: &JSON) -> Result<JSON> {
 }
 
 #[cfg(target_arch = "wasm32")]
-pub fn timestamp() -> f64 {
-    unimplemented!()
+#[wasm_bindgen(inline_js = r#"
+export function timestamp() {
+    return performance.now();
+}"#)]
+extern "C" {
+    fn timestamp() -> f64;
 }
 
 #[cfg(not(target_arch = "wasm32"))]

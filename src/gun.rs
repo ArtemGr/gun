@@ -1,18 +1,18 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-#![feature(non_ascii_idents)]
+// #![feature(non_ascii_idents)]
 #![allow(unknown_lints, uncommon_codepoints)]
 
 use anyhow::Result;
 
+pub mod dedup;
+pub mod ham;
 pub mod plugins;
 pub mod util;
-mod dedup;
 mod get;
-mod ham;
 
 use crate::{
 	get::GunGet,
-	plugins::websockets_tokio::WebsocketsTokio,
+	plugins::DummyPlugin,
 	util::Plugin,
 };
 
@@ -50,14 +50,14 @@ pub struct GunBuilder<'a> {
 impl<'a> GunBuilder<'a> {
 	pub fn new() -> Self {
 		Self {
-			plugin: Plugin::new(Box::new(WebsocketsTokio::new())),
+			plugin: Plugin::new(Box::new(DummyPlugin::new())),
 			options: GunOptions::default(),
 		}
 	}
 
 	pub fn new_with_options(options: GunOptions<'a>) -> Self {
 		Self {
-			plugin: Plugin::new(Box::new(WebsocketsTokio::new())),
+			plugin: Plugin::new(Box::new(DummyPlugin::new())),
 			options,
 		}
 	}
