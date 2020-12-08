@@ -16,7 +16,7 @@ async fn main() -> Result<()> {
 	    .filter(None, log::LevelFilter::Info)
 	    .init();
 
-	let gun = GunBuilder::new().peers(&["ws://e2eec.herokuapp.com/gun"]);
+	let gun = GunBuilder::new().peers(&["https://e2eec.herokuapp.com/gun"]);
 	let gun = gun.build();
 	let gun = Arc::new(gun);
 

@@ -130,6 +130,16 @@ async fn handle_connection(store: Arc<Mutex<Store>>, stream: WebSocketStream<Tcp
     store.lock().unwrap().peers.remove(&addr);
 }
 
+fn replace_http(url: &str) -> String {
+    if url.contains("https") {
+        url.replace("https", "ws").into()
+    } else if url.contains("http") {
+        url.replace("https", "ws").into()
+    } else {
+        url.into()
+    }
+}
+
 #[async_trait]
 impl GunPlugin for WebsocketsTokio {
     async fn start<'a>(&self, options: &GunOptions<'a>) -> Result<()> {
@@ -138,7 +148,8 @@ impl GunPlugin for WebsocketsTokio {
         log::info!("Running on 127.0.0.1:{}", options.port);
 
         for peer in options.peers {
-            let url = Url::parse(peer)?;
+            let url = replace_http(peer);
+            let url = Url::parse(&url)?;
             let (stream, _) = connect_async(url).await?;
             tokio::spawn(handle_connection(self.store.clone(), stream, (*peer).into()));
         }

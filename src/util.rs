@@ -10,6 +10,7 @@ pub type Plugin<'a> = std::sync::Arc<Box<dyn GunPlugin + Send + Sync + 'a>>;
 pub const SOUL: &str = "#";
 pub const METADATA: &str = "_";
 pub const STATE: &str = ">";
+pub const ACK: &str = "@";
 
 pub fn lex_from_graph(lex: JSON, graph: &JSON) -> Result<JSON> {
     let soul = match lex.get(SOUL) {
