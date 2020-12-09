@@ -31,9 +31,9 @@ impl Default for GunOptions<'_> {
 			peers: &[],
 			radisk: true,
 			local_storage: true,
-			#[cfg(feature = "default-uuid")]
-			uuid: util::uuid,
-			#[cfg(not(feature = "default-uuid"))]
+			// #[cfg(feature = "default-uuid")]
+			// uuid: util::uuid,
+			// #[cfg(not(feature = "default-uuid"))]
 			uuid: || "".to_owned(),
 			port: 8080,
 		}

@@ -5,7 +5,9 @@ use wasm_bindgen::prelude::*;
 
 use anyhow::{anyhow, Result};
 use serde_json::{json, Value as JSON};
-use uuid::Uuid;
+
+// #[cfg(feature = "default-uuid")]
+// use uuid::Uuid;
 
 use crate::plugins::GunPlugin;
 
@@ -64,7 +66,7 @@ export function timestamp() {
     return performance.now();
 }"#)]
 extern "C" {
-    fn timestamp() -> f64;
+    pub fn timestamp() -> f64;
 }
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -89,7 +91,8 @@ pub fn parse_json(json: &str) -> Option<JSON> {
 	}
 }
 
-#[cfg(feature = "default-uuid")]
-pub fn uuid() -> String {
-    Uuid::new_v4().to_string()
-}
+// #[cfg(feature = "default-uuid")]
+// #[cfg(not(target_arch = "wasm32"))]
+// pub fn uuid() -> String {
+//     Uuid::new_v4().to_string()
+// }

@@ -33,11 +33,11 @@ async fn main() -> Result<()> {
 		}
 	});
 
-	gun.get("cat").put(Cat { name: "henry".into(), color: "grey".into() }).await;
+	gun.get("cat").put(Cat { name: "henry".into(), color: "grey".into() }).await?;
 
 	gun.get("cat").once(|cat: Cat| {
 		log::info!("{:?}", cat);
-	}).await;
+	}).await?;
 
 	Ok(())
 }

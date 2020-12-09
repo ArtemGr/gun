@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Gun WASM Example</title>
+    </head>
+    <body>
+        <script type=module>
+        import init from './pkg/gun_websockets_wasm_example.js';
+        window.addEventListener('load', async () => {
+        	await init();
+    	});
+        </script>
+    </body>
+</html>

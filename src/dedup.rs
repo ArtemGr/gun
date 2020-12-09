@@ -1,4 +1,3 @@
-#[cfg(not(target_arch = "wasm32"))]
 #[cfg(feature = "std")]
 use std::{
 	sync::{Arc, Mutex},
@@ -14,7 +13,7 @@ use crate::util::timestamp;
 const MAX: f64 = 1.0;
 const AGE: f64 = 9.0;
 
-#[cfg(not(target_arch = "wasm32"))]
+// #[cfg(not(target_arch = "wasm32"))]
 #[cfg(feature = "std")]
 pub struct Dedup {
 	timeline: Arc<Mutex<FnvHashMap<String, f64>>>,
