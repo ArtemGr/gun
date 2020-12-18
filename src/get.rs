@@ -4,7 +4,7 @@ use serde_json::json;
 
 use crate::{
 	dedup::random_soul,
-	util::{timestamp, Plugin, METADATA, SOUL, STATE},
+	util::{timestamp, next_state, Plugin, METADATA, SOUL, STATE},
 };
 
 pub struct GunGet<'a> {
@@ -61,7 +61,7 @@ impl<'a> GunGet<'a> {
             if let Some(data) = self.plugin.check(self.key) {
                 match serde_json::from_value(data) {
 					Ok(res) => cb(res),
-					Err(err) => (),
+					Err(_) => (),
 				}
 			}
 		}
@@ -69,11 +69,12 @@ impl<'a> GunGet<'a> {
 
 	pub async fn put<T>(&self, data: T) -> Result<()> where T: Serialize {
 		let mut data = json!(data);
-		// temp
 		data[METADATA] = json!({
 			SOUL: self.key,
-			STATE: { "name": 1, "color": 1 },
+			STATE: next_state(self.key, &data, self.plugin.graph()),
 		});
+
+		log::info!("{}", data[METADATA][STATE]);
 
 		let data = json!({
 			SOUL: random_soul(),

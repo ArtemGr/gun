@@ -60,6 +60,36 @@ pub fn lex_from_graph(lex: JSON, graph: &JSON) -> Result<JSON> {
     }
 }
 
+pub fn next_state(soul: &str, data: &JSON, graph: JSON) -> JSON {
+    let mut state = json!({});
+
+    if let Some(node) = graph.get(soul) {
+        let node_state = &node[METADATA][STATE];
+
+        for (key, val) in data.as_object().unwrap().iter() {
+            state[key] = json!(match node_state.get(key) {
+                Some(n) => {
+                    let n = n.as_i64().unwrap();
+                    log::info!("{:?}", node[key]);
+                    log::info!("{:?}", val);
+                    if &node[key] == val {
+                        n
+                    } else {
+                        n + 1
+                    }
+                },
+                None => 1,
+            });
+        }
+    } else {
+        for key in data.as_object().unwrap().keys() {
+            state[key] = json!(1);
+        }
+    }
+
+    state
+}
+
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(inline_js = r#"
 export function timestamp() {

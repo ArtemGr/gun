@@ -10,6 +10,7 @@ pub trait GunPlugin {
 	fn emit(&self, data: String);
 	fn check(&self, key: &str) -> Option<JSON>;
 	fn wait_for_connection(&self);
+	fn graph(&self) -> JSON;
 }
 
 pub struct DummyPlugin {}
@@ -24,4 +25,5 @@ impl GunPlugin for DummyPlugin {
 	fn emit(&self, _data: String) { unimplemented!() }
 	fn check(&self, _key: &str) -> Option<JSON> { unimplemented!() }
 	fn wait_for_connection(&self) { unimplemented!() }
+	fn graph(&self) -> JSON { unimplemented!() }
 }

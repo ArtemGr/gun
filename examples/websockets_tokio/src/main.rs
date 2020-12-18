@@ -6,9 +6,9 @@ use gun_websockets_tokio::WebsocketsTokio;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Cat {
-	name: String,
-	color: String,
+struct Pos {
+	x: u32,
+	y: u32,
 }
 
 #[tokio::main]
@@ -33,10 +33,14 @@ async fn main() -> Result<()> {
 		}
 	});
 
-	gun.get("cat").put(Cat { name: "henry".into(), color: "grey".into() }).await?;
+	gun.get("pos").once(|pos: Pos| {
+		log::info!("{:?}", pos);
+	}).await?;
 
-	gun.get("cat").once(|cat: Cat| {
-		log::info!("{:?}", cat);
+	gun.get("pos").put(Pos { x: 3, y: 5 }).await?;
+
+	gun.get("pos").once(|pos: Pos| {
+		log::info!("{:?}", pos);
 	}).await?;
 
 	Ok(())

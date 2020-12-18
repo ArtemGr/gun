@@ -1,6 +1,8 @@
 use std::{
     collections::HashMap,
 	sync::{Arc, Mutex},
+    thread,
+    time::Duration,
 };
 
 use anyhow::Result;
@@ -8,7 +10,7 @@ use async_trait::async_trait;
 use futures_channel::mpsc::{unbounded, UnboundedSender};
 use futures_util::{future, pin_mut, TryStreamExt, StreamExt};
 use serde_json::{json, Value as JSON};
-use tokio::{net::{TcpListener, TcpStream}, time::{sleep, Duration}};
+use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::{connect_async, WebSocketStream};
 use tungstenite::protocol::Message;
 use url::Url;
@@ -55,7 +57,7 @@ impl WebsocketsTokio {
     }
 
     pub fn plug_into(gun: &mut GunBuilder) {
-        gun.plugin = Arc::new(Box::new(WebsocketsTokio::new()));
+        gun.plugin = Arc::new(Box::new(Self::new()));
     }
 }
     
@@ -185,7 +187,11 @@ impl GunPlugin for WebsocketsTokio {
 
     fn wait_for_connection(&self) {
         while self.store.lock().unwrap().peers.is_empty() {
-            sleep(Duration::from_millis(500));
+            thread::sleep(Duration::from_millis(500));
         }
+    }
+
+    fn graph(&self) -> JSON {
+        self.store.lock().unwrap().graph.clone()
     }
 }
