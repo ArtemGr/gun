@@ -14,5 +14,8 @@
 → ☐ Revisit the book highlights  
 ☐ Consider creating a Telegram channel in order to allow for convenient video messaging  
 → ☐ See if Telescope is supported in Telegram groups  
+→ ☐ Telescope promotes good video ecology: short videos are easier to discard and retry, easier to watch and to index, allow for chunked communication and dialogue. Question is, can we transfer this somehow to Discord? A bot that would copy the Telegram Telescope videos to Discord? And should we bother?  
 ☐ Figure how/if the Qualitative Interviewing can factor into the bounty-driven development  
 → ☐ Consider the format of public podcasts  
+→ ☐ Experiment with video attachments on GitHub  
+→ ☐ Play with the idea of (incentivized) transcripts
