@@ -12,6 +12,7 @@
 → ☐ Finish working through the book  
 → ☐ Grab the book highlights  
 → ☐ Revisit the book highlights  
+→ ☐ Assemble a list of people whom we can ask about GUN  
 ☐ Consider creating a Telegram channel in order to allow for convenient video messaging  
 → ☐ See if Telescope is supported in Telegram groups  
 → ☑ Telescope promotes good video ecology: short videos are easier to discard and retry, easier to watch and to index, allow for chunked communication and dialogue. Question is, can we transfer this somehow to Discord? A bot that would copy the Telegram Telescope videos to Discord? And should we bother? ⇒ Discord can embed short (under 8 MB) libx264 mp4 videos, which seems good enough, though maybe we should collect the ways to record these  
@@ -19,3 +20,7 @@
 → ☐ Consider the format of public podcasts  
 → ☑ Experiment with video attachments on GitHub  
 → ☐ Play with the idea of (incentivized) transcripts
+
+# work group
+
+@mhelander on SEA: “my part was to make SEA to work, how it's integrated into Gun is more @marknadal super skills I think...”, continued at https://discord.com/channels/612645357850984470/612645357850984473/793023656795045920
