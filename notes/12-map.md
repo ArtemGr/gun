@@ -9,6 +9,7 @@
 
 ☐ Experiment with Qualitative Interviewing  
 → ☑ Create a separate MarkDown space  
+→ ☑ Transcript the first set of interviews  
 → ☐ Finish working through the book  
 → ☐ Grab the book highlights  
 → ☐ Revisit the book highlights  
