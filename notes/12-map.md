@@ -14,6 +14,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/
 
 ☐ Explore some of the literature adjucent to motivation streams  
+→ ☐ Turn the Ship Around  
 → ☐ Brain Tingles  
 → ☐ What the F  
 → ☐ Man's search for meaning  
@@ -23,6 +24,7 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 ☐ Experiment with Qualitative Interviewing  
 → ☑ Create a separate MarkDown space  
 → ☑ Transcript the first set of interviews  
+→ ☐ Second round, self-wishing and the Happy New Year  
 → ☐ Finish working through the book  
 → ☐ Grab the book highlights  
 → ☐ Revisit the book highlights  
