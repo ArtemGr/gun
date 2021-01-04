@@ -21,7 +21,7 @@ impl<'a> GunGet<'a> {
 		}
 	}
 
-	pub async fn once<T>(&self, cb: fn(T)) -> Result<()> where T: DeserializeOwned {
+	pub async fn once<T>(&self) -> Result<T> where T: DeserializeOwned {
 		let data = json!({
             SOUL: random_soul(),
             "get": { SOUL: self.key },
@@ -34,12 +34,10 @@ impl<'a> GunGet<'a> {
             let begin = timestamp();
             loop {
                 if let Some(data) = self.plugin.check(self.key) {
-	                match serde_json::from_value(data) {
-						Ok(res) => cb(res),
-						Err(err) => return Err(anyhow!(err)),
+	                return match serde_json::from_value(data) {
+						Ok(res) => Ok(res),
+						Err(err) => Err(anyhow!(err)),
 					}
-
-					return Ok(())
 				}
                 if timestamp() - begin > 10.0 {
                     break;

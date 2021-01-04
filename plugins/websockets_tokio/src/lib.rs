@@ -73,9 +73,10 @@ fn handle_message(store: &Arc<Mutex<Store>>, msg_str: &str) {
 
     match parse_json(msg_str) {
         Some(msg) => {
-            let soul = msg[SOUL]
-                .as_str()
-                .expect("Soul must be a string");
+            let soul = match msg[SOUL].as_str() {
+                Some(soul) => soul,
+                None => return,
+            };
 
             if store.lock().unwrap().dedup.check(soul.into()).is_none() {
                 store.lock().unwrap().dedup.track(soul.into());
@@ -139,7 +140,7 @@ fn replace_http(url: &str) -> String {
     if url.contains("https") {
         url.replace("https", "ws").into()
     } else if url.contains("http") {
-        url.replace("https", "ws").into()
+        url.replace("http", "ws").into()
     } else {
         url.into()
     }

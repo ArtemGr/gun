@@ -37,7 +37,7 @@ async fn main() -> Result<()> {
 		log::info!("{:?}", pos);
 	}).await?;
 
-	gun.get("pos").put(Pos { x: 3, y: 5 }).await?;
+	gun.get("pos").put(Pos { x: 3, y: 7 }).await?;
 
 	gun.get("pos").once(|pos: Pos| {
 		log::info!("{:?}", pos);

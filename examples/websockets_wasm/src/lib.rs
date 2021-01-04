@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use async_std::task;
 use gun::GunBuilder;
@@ -7,110 +7,99 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Cat {
-	name: String,
-	color: String,
+    name: String,
+    color: String,
 }
 
-async fn gun() {
-	env_logger::Builder::from_default_env()
-	    .filter(None, log::LevelFilter::Info)
-	    .init();
-
-	let mut gun = GunBuilder::new().peers(&["https://e2eec.herokuapp.com/gun"]);
-	WebsocketsWASM::plug_into(&mut gun);
-	let gun = gun.build();
-	let gun = Arc::new(gun);
-
-	let gun_clone = gun.clone();
-	task::spawn_local(async move { gun_clone.start().await });
-
-	gun.get("cat").put(Cat { name: "henry".into(), color: "grey".into() }).await.unwrap();
-
-	gun.get("cat").once(|cat: Cat| {
-		log::info!("{:?}", cat);
-	}).await.unwrap();
-}
-
+use log::Level;
 use mogwai::prelude::*;
+use std::panic;
 use wasm_bindgen::prelude::*;
 
-pub struct Button {
-    pub clicks: i32
+// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
+// allocator.
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+struct App {
+    clicks: u32,
+    cat: Arc<Mutex<Option<Cat>>>,
 }
 
 #[derive(Clone)]
-pub enum ButtonIn {
-    Click
+enum AppModel {
+    Click,
 }
 
 #[derive(Clone)]
-pub enum ButtonOut {
-    Clicks(String)
+enum AppView {
+    Clicked(u32),
 }
 
-impl Component for Button {
-    type ModelMsg = ButtonIn;
-    type ViewMsg = ButtonOut;
+impl Component for App {
     type DomNode = HtmlElement;
+    type ModelMsg = AppModel;
+    type ViewMsg = AppView;
 
-    fn update(
-        &mut self,
-        msg: &ButtonIn,
-        tx_view: &Transmitter<ButtonOut>,
-        _subscriber: &Subscriber<ButtonIn>
-    ) {
+    fn update(&mut self, msg: &AppModel, tx: &Transmitter<AppView>, _sub: &Subscriber<AppModel>) {
         match msg {
-            ButtonIn::Click => {
+            AppModel::Click => {
                 self.clicks += 1;
-                let text = if self.clicks == 1 {
-                    "Clicked 1 time".to_string()
-                } else {
-                    format!("Clicked {} times", self.clicks)
-                };
-                tx_view.send(&ButtonOut::Clicks(text))
+                tx.send(&AppView::Clicked(self.clicks));
             }
         }
     }
 
-    // Notice that the `Component::view` function returns a `ViewBuilder<T>` and not
-    // a `View<T>`.
-    fn view(
-        &self,
-        tx: &Transmitter<ButtonIn>,
-        rx: &Receiver<ButtonOut>
-    ) -> ViewBuilder<HtmlElement> {
-        let tx_event = tx.contra_map(|_:&Event| ButtonIn::Click);
-        let rx_text = rx.branch_map(|ButtonOut::Clicks(text)| text.clone());
-
-        builder!(
-            // Create a button that transmits a message into tx_event on click.
-            <button on:click=tx_event>
-                // Using braces we can embed rust values in our DOM.
-                // Here we're creating a text node that starts with the
-                // string "Clicked 0 times" and then updates every time a
-                // message is received on rx_text.
-                {("Clicked 0 times", rx_text)}
-            </button>
-        )
+    fn view(&self, tx: &Transmitter<AppModel>, rx: &Receiver<AppView>) -> ViewBuilder<HtmlElement> {
+        let cat_message = match &*self.cat.lock().unwrap() {
+            Some(cat) => format!("{}\n{}", cat.name, cat.color),
+            None => String::from("No cat"),
+        };
+        builder! {
+            <div>
+                <button on:click=tx.contra_map(|_| AppModel::Click)>
+                    {(
+                        "Hello from mogwai!",
+                        rx.branch_map(|msg| {
+                            match msg {
+                                AppView::Clicked(1) => format!("Caught 1 click, click again 😀"),
+                                AppView::Clicked(n) => format!("Caught {} clicks", n),
+                            }
+                        })
+                    )}
+                </button>
+                <p>
+                    {cat_message}
+                </p>
+            </div>
+        }
     }
 }
 
 #[wasm_bindgen(start)]
-pub fn main() {
-	let gizmo = Gizmo::from(Button{ clicks: 0 });
-	// ...and create a View from that gizmo's builder.
-	let view = View::from(gizmo.view_builder());
-	// Queue some messages for the component, as if the button had been clicked:
-	gizmo.send(&ButtonIn::Click);
-	gizmo.send(&ButtonIn::Click);
+pub fn main() -> Result<(), JsValue> {
+    panic::set_hook(Box::new(console_error_panic_hook::hook));
+    console_log::init_with_level(Level::Trace).unwrap();
 
-	assert_eq!(&view.html_string(), "<button>Clicked 2 times</button>");
+    let mut gun = GunBuilder::new().peers(&["https://e2eec.herokuapp.com/gun"]);
+    WebsocketsWASM::plug_into(&mut gun);
+    let gun = gun.build();
+    let gun = Arc::new(gun);
 
-	task::spawn_local(gun());
+    let gun_clone = gun.clone();
+    task::spawn_local(async move { gun_clone.start().await });
 
-	if cfg!(target_arch = "wasm32") {
-	    // running a view adds its DOM to the document.body and ownership is passed to the window,
-	    // so this only works in the browser
-	    view.run().unwrap_throw()
-	}
+    let cat = Arc::new(Mutex::new(None));
+
+    // let cat_clone = cat.clone();
+    // task::spawn_local(async move {
+    //     gun.get("cat").put(Cat { name: "henry".into(), color: "grey".into() }).await.unwrap();
+
+    //     *cat_clone.lock().unwrap() = Some(gun.get("cat").once::<Cat>().await.unwrap());
+    // });
+
+    let gizmo = Gizmo::from(App { clicks: 0, cat });
+    let view = View::from(gizmo.view_builder());
+    view.run()
 }
