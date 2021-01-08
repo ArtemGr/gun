@@ -1,7 +1,5 @@
 
 ☑ Experiment with ObservableHQ graphs ⇒ https://observablehq.com/@artemgr/rusty-gun-a-story  
-☐ Learn from https://observablehq.com/@d3/mobile-patent-suits  
-☐ See if https://www.youtube.com/watch?v=zTBp0Lmw4ZE helps  
 ☐ Make a larger map in `rusty-gun-a-story`  
 → ☑ Narrow down to major goals ⇒ Bottom-up development; modularity; transfer of knowledge in OSS  
 ☐ Gource in the README  
@@ -12,7 +10,10 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 ☐ List contributors in Change Log, cf. https://github.com/Geal/nom/blob/master/CHANGELOG.md
 
 ☐ Experiment with bottom-up (leader-leader) bounty-driven development  
-→ ☐ Phase one, the Telegram group  
+→ ☑ Phase one, the Telegram group ⇒ Positive feedback, small traction  
+→ ☑ Daily top up ⇒ Added to TasksDb  
+→ ☒ List of known bounty kinds ⇒ I suspect this is “disruptive to routine tasks”, should focus on task creation, selection and acquisition first, and then return to the *bonus lottery* later on  
+→ ☑ “take a break” experiment ⇒ https://github.com/ArtemGr/bounty/issues/5; https://www.freelancer.com/contest/take-a-break-go-out-and-make-a-picture-1873762/entries; https://www.upwork.com/ab/applicants/1347469384349327360/job-details  
 
 ☐ Consider the competition format,  
 cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/
