@@ -25,6 +25,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/
 
 ☐ Explore some of the literature adjucent to motivation streams  
+→ ☑ Organic Design  
 → ☐ Turn the Ship Around ⇒ 32%  
 → → ☑ Discuss with Chet  
 → ☐ Flirt: Afterword  
