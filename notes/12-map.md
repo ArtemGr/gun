@@ -14,6 +14,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 → ☐ Improve the way benchmarks are communicated in a task  
 → ☐ Improve the way benchmarks are measured and represented  
 → ☐ Graphics and stats  
+→ ☐ Benchmarks can also be useful for research and orientation, cf. “categorize the issues and compare the impacts of the bounties, for example, bounties for bug fixes versus bounties for feature additions” at https://www.freelancer.com/contest/tell-us-about-the-open-source-bounty-ecosystem-1873760-byentry-47325551
 
 ☐ Experiment with bottom-up (leader-leader) bounty-driven development  
 → ☑ Phase one, the Telegram group ⇒ Positive feedback, small traction  
