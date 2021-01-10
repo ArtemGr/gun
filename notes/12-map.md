@@ -26,6 +26,11 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/
 
 ☐ Explore some of the literature adjucent to motivation streams  
+→ ☑ https://arxiv.org/pdf/1805.09850.pdf Ruohonen Allodi 2018  
+→ → ☐ https://www.sciencedirect.com/science/article/abs/pii/S0268401216305412  
+→ → ☐ https://www.sciencedirect.com/science/article/abs/pii/S1361372314704634  
+→ → ☐ https://alarcos.esi.uclm.es/DocumentosWeb/2017-Journal%20of%20Systems%20and%20Software-Garc%C3%ADa.pdf  
+→ → ☐ “jit20157a - impact of openness on multi-sided platforms.pdf”  
 → ☑ Organic Design  
 → ☐ Turn the Ship Around ⇒ 32%  
 → → ☑ Discuss with Chet  
