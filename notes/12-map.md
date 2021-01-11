@@ -22,6 +22,8 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 → ☒ List of known bounty kinds ⇒ I suspect this is “disruptive to routine tasks”, should focus on task creation, selection and acquisition first, and then return to the *bonus lottery* later on  
 → ☑ “take a break” experiment ⇒ https://github.com/ArtemGr/bounty/issues/5; https://www.freelancer.com/contest/take-a-break-go-out-and-make-a-picture-1873762/entries; https://www.upwork.com/ab/applicants/1347469384349327360/job-details  
 
+☐ RLS bountry experiment (https://www.reddit.com/r/rust/comments/kur3vn/rls_bounty_583_to_fix_stuck_on_indexing/)
+
 ☐ Consider the competition format,  
 cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/
 
