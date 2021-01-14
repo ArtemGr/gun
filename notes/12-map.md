@@ -34,7 +34,7 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 → → ☐ https://alarcos.esi.uclm.es/DocumentosWeb/2017-Journal%20of%20Systems%20and%20Software-Garc%C3%ADa.pdf  
 → → ☐ “jit20157a - impact of openness on multi-sided platforms.pdf”  
 → ☑ Organic Design  
-→ ☐ Turn the Ship Around ⇒ 32%  
+→ ☐ Turn the Ship Around ⇒ 41%  
 → → ☑ Discuss with Chet  
 → ☐ Flirt: Afterword  
 → ☐ Brain Tingles  
@@ -46,12 +46,14 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 ☐ Experiment with Qualitative Interviewing  
 → ☑ Create a separate MarkDown space  
 → ☑ Transcript the first set of interviews  
-→ ☐ Second round, self-wishing and the Happy New Year  
+→ ☑ Second round, self-wishing and the Happy New Year  
 → ☐ Finish working through the book  
 → ☐ Grab the book highlights  
 → ☐ Revisit the book highlights  
 → ☑ Assemble a list of people whom we can ask about GUN  
 → ☐ Interview with Aelita  
+→ ☑ Interview with Shawkat  
+→ ☑ Interview with Mario  
 ☐ Consider creating a Telegram channel in order to allow for convenient video messaging  
 → ☐ See if Telescope is supported in Telegram groups  
 → ☑ Telescope promotes good video ecology: short videos are easier to discard and retry, easier to watch and to index, allow for chunked communication and dialogue. Question is, can we transfer this somehow to Discord? A bot that would copy the Telegram Telescope videos to Discord? And should we bother? ⇒ Discord can embed short (under 8 MB) libx264 mp4 videos, which seems good enough, though maybe we should collect the ways to record these  
@@ -73,4 +75,14 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 
 Mark: “@mhelander @jabis @mmalmi @rogowski @mimiza @go1dfish @Dletta probably have the best understanding of various internal parts”
 
-#docs-wiki can be used for pubsub
+`#docs-wiki` can be used for pubsub
+
+# benchmarks
+
+Yurii has mentioned a “distance” benchmark. Too little distance might result in rot and stagnation, lack of self-expansion. Too much distance might result in ridicule and negative affect. cf.
+
+    “when confronted by a truly novel stimulus, the initial reactions are defensive and protective .. Only after information accumulates over time suggesting a lack of threat do more traditional “orienting” behaviors of approach and exploration ensue”
+
+The culture tags [proposed by andrew-ld](https://github.com/ArtemGr/bounty/issues/6) might be related to distance
+
+Distance is but one of the sources which factor into defensive and appetitive motivational systems. What we really want to measure is appetitive/defensive emotion. But people would often and automatically hide their emotions ([“эффект кафтана”](https://youtu.be/zypuneus6b0)) so we might need uncontaminated markers… like distance
