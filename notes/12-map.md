@@ -12,7 +12,10 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 ☐ Benchmarks  
 → ☐ Different tasks should have different benchmarks  
 → ☐ Improve the way benchmarks are communicated in a task  
+→ → ☐ Interactive ObservableHQ guide?  
 → ☐ Improve the way benchmarks are measured and represented  
+→ → ☐ Suggest recurring qualitative questions in the document, but embed also a quantitative part  
+→ → ☐ Help with collecting and storing the answers  
 → ☐ Graphics and stats  
 → ☐ Benchmarks can also be useful for research and orientation, cf. “categorize the issues and compare the impacts of the bounties, for example, bounties for bug fixes versus bounties for feature additions” at https://www.freelancer.com/contest/tell-us-about-the-open-source-bounty-ecosystem-1873760-byentry-47325551
 
@@ -41,7 +44,8 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 → ☐ What the F  
 → ☐ Man's search for meaning  
 → ☐ Louder Than Words  
-→ ☐ Pre-Suasion
+→ ☐ Pre-Suasion  
+→ ☐ Пушистая книга
 
 ☐ Experiment with Qualitative Interviewing  
 → ☑ Create a separate MarkDown space  
@@ -54,6 +58,7 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 → ☐ Interview with Aelita  
 → ☑ Interview with Shawkat  
 → ☑ Interview with Mario  
+→ ☑ Interview with MV  
 ☐ Consider creating a Telegram channel in order to allow for convenient video messaging  
 → ☐ See if Telescope is supported in Telegram groups  
 → ☑ Telescope promotes good video ecology: short videos are easier to discard and retry, easier to watch and to index, allow for chunked communication and dialogue. Question is, can we transfer this somehow to Discord? A bot that would copy the Telegram Telescope videos to Discord? And should we bother? ⇒ Discord can embed short (under 8 MB) libx264 mp4 videos, which seems good enough, though maybe we should collect the ways to record these  
