@@ -28,7 +28,8 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 ☐ RLS bountry experiment (https://www.reddit.com/r/rust/comments/kur3vn/rls_bounty_583_to_fix_stuck_on_indexing/)
 
 ☐ Consider the competition format,  
-cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/
+cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/  
+☑ Experiment with https://www.bitfortip.com/ ⇒ Useful for gettins a better sense of average, of basic knowledge. Anything past the basics - we might want to elaborate or synchronize on ⇒ Good input from https://www.bitfortip.com/questions/1039
 
 ☐ Explore some of the literature adjucent to motivation streams  
 → ☑ https://arxiv.org/pdf/1805.09850.pdf Ruohonen Allodi 2018  
@@ -43,9 +44,9 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 → ☐ Brain Tingles  
 → ☐ What the F  
 → ☐ Man's search for meaning  
-→ ☐ Louder Than Words  
+→ ☐ Louder Than Words ⇒ 4%  
 → ☐ Pre-Suasion  
-→ ☐ Пушистая книга
+→ ☐ Пушистая книга ⇒ 16%  
 
 ☐ Experiment with Qualitative Interviewing  
 → ☑ Create a separate MarkDown space  
