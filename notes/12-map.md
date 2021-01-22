@@ -23,7 +23,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 → ☑ Phase one, the Telegram group ⇒ Positive feedback, small traction  
 → ☑ Daily top up ⇒ Added to TasksDb  
 → ☒ List of known bounty kinds ⇒ I suspect this is “disruptive to routine tasks”, should focus on task creation, selection and acquisition first, and then return to the *bonus lottery* later on  
-→ ☑ “take a break” experiment ⇒ https://github.com/ArtemGr/bounty/issues/5; https://www.freelancer.com/contest/take-a-break-go-out-and-make-a-picture-1873762/entries; https://www.upwork.com/ab/applicants/1347469384349327360/job-details  
+→ ☑ “take a break” experiment ⇒ https://github.com/ArtemGr/bounty/issues/5; https://www.freelancer.com/contest/take-a-break-go-out-and-make-a-picture-1873762/entries; https://www.upwork.com/ab/applicants/1347469384349327360/job-details; https://www.freelancer.com/contest/twitter-tag-for-fun-and-social-contests-1880774/details  
 
 ☐ RLS bountry experiment (https://www.reddit.com/r/rust/comments/kur3vn/rls_bounty_583_to_fix_stuck_on_indexing/)
 
@@ -46,7 +46,7 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 → ☐ Man's search for meaning  
 → ☐ Louder Than Words ⇒ 4%  
 → ☐ Pre-Suasion  
-→ ☐ Пушистая книга ⇒ 16%  
+→ ☐ Пушистая книга ⇒ 43%  
 
 ☐ Experiment with Qualitative Interviewing  
 → ☑ Create a separate MarkDown space  
@@ -66,12 +66,16 @@ cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/conte
 ☐ Figure how/if the Qualitative Interviewing can factor into the bounty-driven development  
 → ☑ File the idea of embedded QI  
 → ☑ Consider the format of public podcasts ⇒ Known downsides: time synchronization, TMI, hard to get different opinions from different people, postprocessing not included  
-→ ☑ Experiment with video attachments on GitHub  
-→ ☐ Play with the idea of (incentivized) transcripts
+→ ☑ Experiment with video attachments on GitHub
 
 ☐ Look at gossipsub, as it might affect the design and the wishlists around the p2p layers  
 → ☐ [Gossipsub-v1.1 Evaluation Report](https://gateway.ipfs.io/ipfs/QmRAFP5DBnvNjdYSbWhEhVRJJDFCLpPyvew5GwCCB4VxM4)  
 → ☐ https://blog.ipfs.io/2020-05-20-gossipsub-v1.1/
+
+☐ Look at the “[Ecosystem Review](https://matrix.org/_matrix/media/r0/download/twitter.modular.im/981b258141aa0b197804127cd2f7d298757bad20)”
+
+☐ Investigate GUN  
+→ ☐ the first trace
 
 # work group
 
