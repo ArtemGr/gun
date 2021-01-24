@@ -9,6 +9,29 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 ☐ Consider making a list of projects using the rusty GUN. Should it be in the README? Can we feature a random project/contributor/backer in the README (similar to crate-of-the-week in TWiR)? cf. https://github.com/GiraffeKey/dahlia  
 ☐ List contributors in Change Log, cf. https://github.com/Geal/nom/blob/master/CHANGELOG.md
 
+☐ Research informal freelancer networks  
+→ ☑ https://www.bitfortip.com/questions/1055 looking for precedents  
+→ → ☐ [lemon.io report](https://lemon.io/wp-content/uploads/2020/10/Startups_vs_Freelancers_2020_report_by_Lemon.pdf) ?  
+→ ☐ Experiment with fiverr  
+→ ☐ Experiment with PeoplePerHour  
+→ ☐ Experiment with gun.io interviews  
+→ ☐ Experiment with lemon.io  
+→ ☐ Experiment with toptal.com  
+
+☐ Research on what makes a good freelance client  
+→ ☑ https://www.bitfortip.com/questions/1056 looking for sources  
+→ → ☐ https://podcasts.apple.com/gb/podcast/for-free/id1450112037?i=1000453046511  
+→ → ☐ https://podcasts.apple.com/gb/podcast/what-is-a-launch/id1450112037?i=1000504413709  
+→ → ☐ https://podcasts.apple.com/gb/podcast/confident-on-camera/id1450112037?i=1000503058341  
+→ → ☐ https://podcasts.apple.com/gb/podcast/ups-and-downs/id1450112037?i=1000498791602  
+→ → ☐ https://podcasts.apple.com/gb/podcast/how-to-delight/id1450112037?i=1000495243023  
+→ → ☐ https://podcasts.apple.com/gb/podcast/tips-for-brand-new/id1450112037?i=1000494439281  
+→ → ☐ https://podcasts.apple.com/gb/podcast/detox/id1450112037?i=1000489627404  
+→ → ☐ https://podcasts.apple.com/gb/podcast/turned-down-money/id1450112037?i=1000488352002  
+→ → ☐ https://podcasts.apple.com/gb/podcast/creativity-as-therapy/id1450112037?i=1000466492227  
+→ → ☐ https://podcasts.apple.com/gb/podcast/engaged-community-video/id1450112037?i=1000465137614  
+→ → ☐ https://clientsfromhell.net/tag/podcast/ (recurring)  
+
 ☐ Benchmarks  
 → ☐ Different tasks should have different benchmarks  
 → ☐ Improve the way benchmarks are communicated in a task  
