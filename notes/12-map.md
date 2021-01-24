@@ -1,6 +1,6 @@
 
 ☑ Experiment with ObservableHQ graphs ⇒ https://observablehq.com/@artemgr/rusty-gun-a-story  
-☐ Make a larger map in `rusty-gun-a-story`  
+☑ Make a larger map in `rusty-gun-a-story`  
 → ☑ Narrow down to major goals ⇒ Bottom-up development; modularity; transfer of knowledge in OSS  
 ☐ Gource in the README  
 cf. https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality  
