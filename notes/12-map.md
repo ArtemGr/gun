@@ -12,7 +12,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 ☐ Research informal freelancer networks  
 → ☑ https://www.bitfortip.com/questions/1055 looking for precedents  
 → → ☐ [lemon.io report](https://lemon.io/wp-content/uploads/2020/10/Startups_vs_Freelancers_2020_report_by_Lemon.pdf) ?  
-→ ☐ Experiment with fiverr  
+→ ☑ Experiment with fiverr ⇒ Learned that developers would often prefer to get proposals, instead of manually filtering through the jobs. Also the job matching ritual is suboptimal (see the chat with speedwares)  
 → ☐ Experiment with PeoplePerHour  
 → ☐ Experiment with gun.io interviews  
 → ☐ Experiment with lemon.io  
@@ -47,11 +47,12 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 → ☑ Daily top up ⇒ Added to TasksDb  
 → ☒ List of known bounty kinds ⇒ I suspect this is “disruptive to routine tasks”, should focus on task creation, selection and acquisition first, and then return to the *bonus lottery* later on  
 → ☑ “take a break” experiment ⇒ https://github.com/ArtemGr/bounty/issues/5; https://www.freelancer.com/contest/take-a-break-go-out-and-make-a-picture-1873762/entries; https://www.upwork.com/ab/applicants/1347469384349327360/job-details; https://www.freelancer.com/contest/twitter-tag-for-fun-and-social-contests-1880774/details  
+→ ☑ Start Twitter contests
 
 ☐ RLS bountry experiment (https://www.reddit.com/r/rust/comments/kur3vn/rls_bounty_583_to_fix_stuck_on_indexing/)
 
-☐ Consider the competition format,  
-cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/  
+☑ Consider the competition format,  
+cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/ ⇒ There is a low-hanging fruit of implementing competition-like benchmarks (high scores, halls of fame) over the open job database, announcing them on Twitter, displaying in UI. That is, instead of organizing a separate competition we might be able to reuse and improve the bounty and freelance benchmarks, perhaps also the quality and security reviews. That way it isn't just about competition but we can benchmark also, say, teamwork  
 ☑ Experiment with https://www.bitfortip.com/ ⇒ Useful for gettins a better sense of average, of basic knowledge. Anything past the basics - we might want to elaborate or synchronize on ⇒ Good input from https://www.bitfortip.com/questions/1039
 
 ☐ Explore some of the literature adjucent to motivation streams  
