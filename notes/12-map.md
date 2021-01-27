@@ -6,7 +6,6 @@
 cf. https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality  
 cf. https://github.com/cyburgee/ffmpeg-guide  
 → ☐ Upload the Gource log also, making it accessible from ObservableHQ, in case we'd want to add dynamic JS visualizations later  
-☐ Consider making a list of projects using the rusty GUN. Should it be in the README? Can we feature a random project/contributor/backer in the README (similar to crate-of-the-week in TWiR)? cf. https://github.com/GiraffeKey/dahlia  
 ☐ List contributors in Change Log, cf. https://github.com/Geal/nom/blob/master/CHANGELOG.md
 
 ☐ Research informal freelancer networks  
@@ -30,7 +29,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 → → ☐ https://podcasts.apple.com/gb/podcast/turned-down-money/id1450112037?i=1000488352002  
 → → ☐ https://podcasts.apple.com/gb/podcast/creativity-as-therapy/id1450112037?i=1000466492227  
 → → ☐ https://podcasts.apple.com/gb/podcast/engaged-community-video/id1450112037?i=1000465137614  
-→ → ☐ https://clientsfromhell.net/tag/podcast/ (recurring)  
+→ → ☐ https://clientsfromhell.net/tag/podcast/page/17/, checked: “May 07, 2015”  
 
 ☐ Benchmarks  
 → ☐ Different tasks should have different benchmarks  
