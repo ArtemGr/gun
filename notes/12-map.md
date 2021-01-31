@@ -52,6 +52,7 @@ cf. https://github.com/cyburgee/ffmpeg-guide
 
 ☑ Consider the competition format,  
 cf. https://vk.com/durovschallenge, https://t.me/contests_ru, https://t.me/contest, https://codeforces.com/ ⇒ There is a low-hanging fruit of implementing competition-like benchmarks (high scores, halls of fame) over the open job database, announcing them on Twitter, displaying in UI. That is, instead of organizing a separate competition we might be able to reuse and improve the bounty and freelance benchmarks, perhaps also the quality and security reviews. That way it isn't just about competition but we can benchmark also, say, teamwork  
+⇒ On the other hand, contests might be a way to find bottom-up ideas. Here's a little experiment: https://www.freelancer.com/contest/gource-tool-1885809/details  
 ☑ Experiment with https://www.bitfortip.com/ ⇒ Useful for gettins a better sense of average, of basic knowledge. Anything past the basics - we might want to elaborate or synchronize on ⇒ Good input from https://www.bitfortip.com/questions/1039
 
 ☐ Explore some of the literature adjucent to motivation streams  
